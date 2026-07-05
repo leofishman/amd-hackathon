@@ -141,6 +141,7 @@ scripts/
   provision-servers.php   Ollama (zero cost) + Fireworks (env key) servers
   provision-route.php     builds the hybrid_chat route from discovered models
 modules/amd_hackathon/    TaskRunner service + HTTP controller + drush command
+training/                 LoRA fine-tuning pipeline for the classifier/verifier
 STRATEGY.md               decisions and kickoff checklist
 ```
 

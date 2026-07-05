@@ -142,10 +142,49 @@ Consecuencias:
 4. Theming/dashboard: solo para el video de presentación, cero impacto
    en score.
 
+## Modelos revelados (domingo noche, pre-kickoff)
+
+Gemma 4 31B IT Thinking · Gemma 4 26B A4B IT Thinking · Gemma 4 E4B IT
+Thinking · Gemma 4 E2B IT Thinking · Gemma 3 27B IT.
+
+Roles:
+
+- **E2B local** (Ollama/MiniSforum): responde todo primero, costo 0. E4B
+  también local si la RAM da.
+- **31B o 26B-A4B vía Fireworks**: solo escalada. El A4B (MoE, 4B activos)
+  probablemente más barato por token que el 31B denso — comparar en el
+  catálogo al configurar el server; el router elige solo si los costos
+  están bien cargados.
+- **Verificador/clasificador**: E2B few-shot desde el minuto uno;
+  fine-tune sobre E2B si ROCm coopera (LoRA viable a 2B efectivos);
+  fallback gemma-3-270m (sigue siendo Gemma para el bonus).
+
+⚠️ **Son todos "IT Thinking"**: los tokens de razonamiento cuentan como
+output facturado en Fireworks. Local = gratis (solo latencia); en la rama
+remota un thinking model puede quemar 10x la respuesta pensando. El módulo
+ya tiene la perilla: campo `reasoning` por modelo → **`none`/`low` en los
+modelos remotos** apenas se descubran.
+
 ## Checklist kickoff (día 1)
 
-- [ ] Mapear formato de entrada/salida del harness a la puerta que pidan.
-- [ ] Cambiar `OLLAMA_MODELS` a los modelos revelados; ajustar tiers.
-- [ ] Ajustar candidatos/tiers de las rutas a las tareas reales.
-- [ ] Decidir factcheck on/off por ruta según el peso de accuracy en el
-      scoring.
+- [ ] Mapear formato de entrada/salida del harness a la puerta que pidan
+      (`TaskController` / `AmdTaskCommands`; una sola lógica detrás).
+- [ ] `OLLAMA_MODELS` en `.env` con los nombres reales de Ollama (E2B, y
+      E4B si la RAM del entorno da).
+- [ ] Configurar Fireworks (key por env var), descubrir modelos, verificar
+      costos del catálogo y setear **`reasoning: none`/`low` en los
+      modelos remotos** (tokens de thinking = output facturado).
+- [ ] Ajustar candidatos/tiers de `hybrid_chat` a las tareas reales;
+      cargar tier/costo de E2B local (costo 0).
+- [ ] Probar el verificador con E2B real: si Ollama devuelve el bloque
+      `<think>...</think>` en el texto, el parser de sí/no
+      (`str_contains('no')`) puede leer un "no" del razonamiento →
+      strippear `<think>` antes de parsear (fix chico en
+      `UniversalProvider::verifyAnswer()` y `ComplexityClassifier`).
+- [ ] Decidir verifier/factcheck on/off por ruta según el peso de accuracy
+      vs tokens en el scoring real.
+- [ ] Dataset a Grok (training/DATASET_PROMPT.md) agregando 20-50 ejemplos
+      de las tareas reveladas; validar con el checklist antes de entrenar.
+- [ ] Correr una tanda de tareas de práctica y mirar
+      `/admin/reports/ai-router-decisions`: ¿cuántas se resolvieron 100%
+      local? Esa es la métrica a optimizar.
