@@ -1,0 +1,8 @@
+name: 'AMD Hackathon Agent'
+type: module
+description: 'Task entry points (HTTP + Drush) for the hybrid token-efficient routing agent.'
+core_version_requirement: ^11.1 || ^12
+package: AI
+dependencies:
+  - ai:ai
+  - ai_provider_universal:ai_provider_universal_router

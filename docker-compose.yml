@@ -1,0 +1,49 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      DB_HOST: db
+      DB_NAME: drupal
+      DB_USER: drupal
+      DB_PASSWORD: drupal
+      FIREWORKS_API_KEY: ${FIREWORKS_API_KEY:-}
+      OLLAMA_URL: http://ollama:11434
+      # Comma-separated models to pull at first boot. Swap for the models
+      # revealed at the kickoff.
+      OLLAMA_MODELS: ${OLLAMA_MODELS:-gemma3:1b}
+    volumes:
+      # Named volume seeded from the image on first run; persists
+      # settings.php and public files across container recreation.
+      - drupal_sites:/opt/drupal/web/sites
+    depends_on:
+      db:
+        condition: service_healthy
+      ollama:
+        condition: service_started
+
+  db:
+    image: mariadb:11.4
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: drupal
+      MYSQL_USER: drupal
+      MYSQL_PASSWORD: drupal
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ollama:
+    image: ollama/ollama:latest
+    volumes:
+      - ollama_data:/root/.ollama
+
+volumes:
+  db_data:
+  ollama_data:
+  drupal_sites:

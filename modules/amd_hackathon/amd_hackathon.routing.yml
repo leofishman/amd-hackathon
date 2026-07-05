@@ -1,0 +1,11 @@
+amd_hackathon.task:
+  path: '/agent/task'
+  defaults:
+    _controller: 'Drupal\amd_hackathon\Controller\TaskController::task'
+  methods: [POST]
+  requirements:
+    # Open on purpose: the scoring harness is anonymous. The runner only
+    # calls the LLM and returns text; it cannot touch site state.
+    _access: 'TRUE'
+  options:
+    no_cache: TRUE

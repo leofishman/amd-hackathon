@@ -1,0 +1,6 @@
+services:
+  Drupal\amd_hackathon\TaskRunner:
+    class: Drupal\amd_hackathon\TaskRunner
+    autowire: true
+    arguments:
+      $aiProvider: '@ai.provider'
