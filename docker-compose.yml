@@ -13,6 +13,10 @@ services:
       # Comma-separated models to pull at first boot. Swap for the models
       # revealed at the kickoff.
       OLLAMA_MODELS: ${OLLAMA_MODELS:-gemma3:1b}
+      # Local model (entity id) that judges answers before they are
+      # returned; rejection escalates to the best route candidate. Empty =
+      # disabled. Editable later on the route form.
+      AGENT_VERIFIER_MODEL: ${AGENT_VERIFIER_MODEL:-}
     volumes:
       # Named volume seeded from the image on first run; persists
       # settings.php and public files across container recreation.

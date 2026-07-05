@@ -32,7 +32,7 @@ class AmdTaskCommands extends DrushCommands {
     }
     else {
       $this->output()->writeln($result['answer']);
-      $routing = $result['routing'];
+      $routing = $result['routing'] ?? NULL;
       if ($routing) {
         $this->output()->writeln(sprintf(
           '[routing] model=%s complexity=%s est_tokens=%s cost=%s worst=%s (%d ms)',

@@ -116,6 +116,32 @@ Theming (Haven + Gin) es prioridad baja: los jueces LLM leen texto, no CSS.
 - [ ] Timeouts locales bajados a 60 s en el provisioning.
 - [ ] README orientado a jueces (humanos y LLM).
 
+## Reglas confirmadas del Track 1 (2026-07-05)
+
+- Scoring: **solo token count remoto + accuracy**, en entorno
+  estandarizado. Local = 0 tokens. No puntúan latencia, UI ni README.
+- Tareas y modelos se revelan en el kickoff. Fine-tuning permitido y
+  puntuado igual que prompting.
+- Recomiendan un "local eval step" antes de entregar output.
+
+Consecuencias:
+
+1. **Estrategia de mínimo token: local-first con verificación.** Como la
+   latencia es gratis y lo local también, la jugada óptima no es
+   clasificar a priori sino: generar local → verificar calidad local
+   (0 tokens; p.ej. bespoke-minicheck o Gemma fine-tuneada como juez) →
+   escalar a Fireworks **solo si la verificación falla**. Implementado
+   nativo en el módulo: campo `verifier_model` en la ruta (una llamada
+   local sí/no, rechazo escala al mejor candidato, fail-open). Se setea
+   con `AGENT_VERIFIER_MODEL` en `.env` o en el form de la ruta.
+2. **Podar tokens de la rama remota**: el system prompt viaja en cada
+   llamada a Fireworks y cuenta. Versión mínima para remoto.
+3. El fine-tune de Gemma más rentable puede ser el **verificador**
+   ("¿es correcta esta respuesta? sí/no") además del clasificador; el
+   seam `classifier_model` sirve para ambos patrones.
+4. Theming/dashboard: solo para el video de presentación, cero impacto
+   en score.
+
 ## Checklist kickoff (día 1)
 
 - [ ] Mapear formato de entrada/salida del harness a la puerta que pidan.

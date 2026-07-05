@@ -58,6 +58,38 @@ would have cost. `est_cost: 0` means the task never left the box.
 All doors share one service (`TaskRunner`): a single point of logic to
 re-map to whatever interface the evaluation requires.
 
+## Agent strategy
+
+The whole strategy is smart-route configuration — no agent code:
+
+- The route classifies each prompt (heuristics, or a local classifier
+  model — see below) and picks the **cheapest capable** candidate; local
+  models cost 0.
+- Optionally a **verifier model** (set `AGENT_VERIFIER_MODEL` in `.env`,
+  or edit the route form) judges every answer with one local yes/no call;
+  a rejection retries the task once with the best candidate. With
+  local-only cheap candidates this is the token-optimal pattern: **remote
+  tokens are only spent when the local answer demonstrably failed**.
+  Latency is free in the Track 1 scoring; remote tokens are not.
+- A broken verifier fails open (answer returned, warning logged) —
+  verification never sinks a response.
+
+### Complexity classification
+
+The `route` strategy classifies prompts with cheap heuristics (length
+threshold + reasoning cues). Optionally, a local model adjudicates the
+prompts heuristics consider simple:
+
+```bash
+docker compose exec web drush config:set \
+  ai_provider_universal_router.settings classifier_model <model_entity_id> -y
+```
+
+Empty value = pure heuristics. Any classifier failure falls back to
+heuristics; classification never breaks routing. This is the seam for a
+fine-tuned tiny Gemma router: train a LoRA, serve it in Ollama, point
+`classifier_model` (or `AGENT_VERIFIER_MODEL`) at it — no code changes.
+
 ## How routing works
 
 1. Each model (local or remote) is a config entity with **cost per token,

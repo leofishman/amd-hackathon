@@ -43,6 +43,9 @@ if (!$routes->load('hybrid_chat')) {
     // ponytail: tiers tuned blind; recalibrate at kickoff with real tasks.
     'simple_tier' => 1,
     'complex_tier' => 3,
+    // Local model judging answers before return; rejection escalates to the
+    // best candidate. Point it at a (fine-tuned) local Gemma at kickoff.
+    'verifier_model' => getenv('AGENT_VERIFIER_MODEL') ?: '',
     'factcheck' => FALSE,
     'factcheck_min_score' => 0.75,
   ])->save();
