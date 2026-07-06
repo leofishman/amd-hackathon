@@ -80,6 +80,24 @@ articles, settings del factcheck apuntando al modelo AMD si existe) →
   el parser). **Pendientes de push por Leo.** Content scan final: 12 claims,
   los 3 fabricados CONTRADICTED, score 50% — pantalla lista para el video.
 - max_claims subido a 12 (live + provisioning).
+- Repo GitHub creado: `github.com/leofishman/amd-hackaton` (typo "hackaton"
+  en el nombre — cosmético). Commit `60e0a1a` con todo el Track 3 —
+  **pendiente `git push` por Leo**. README reescrito para juez LLM
+  (tabla "Submission facts" arriba con URLs y camino verificable).
+- Deck PDF revisado (está en el repo raíz): 3 fixes pedidos a Leo —
+  (1) slide AMD usa capturas de stock FALSAS → reemplazar por reales
+  (rocm-smi, server amd_vllm, decisions log), (2) dice "serving Gemma" →
+  Qwen2.5-7B, (3) slide final sin URLs literales → agregarlas.
+- **Gemma 3 12B corriendo en la GPU AMD (2026-07-06 noche)**: Leo aceptó
+  la licencia en HF + token, `pkill` del Qwen viejo (nohup sobrevive al
+  cierre de terminal; la GPU quedaba ocupada), Gemma servido en puerto
+  8000 (mismo túnel). Factcheck reapuntado a
+  `amd_vllm__google_gemma_3_12b_it` — veredictos correctos. El deck ya es
+  veraz con "serving Gemma"; quedan 2 fixes del deck (capturas reales +
+  URLs finales).
+- Video: hay una toma grabada (con ~/grabar.sh, ffmpeg verificado); Leo
+  quiere regrabar mejor y montar voz aparte
+  (`ffmpeg -i video.mp4 -i voz.wav -map 0:v -map 1:a -c:v copy final.mp4`).
 - Punto de pitch agregado: sistemas cerrados (Turnitin) = caros, opacos y
   sin acceso al corpus interno; módulo GPL en el CMS propio = lo contrario.
 - OJO: `.env` pisaba OLLAMA_MODELS con gemma3:1b — ya corregido a 4b en

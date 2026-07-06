@@ -2,7 +2,7 @@ services:
   web:
     build: .
     ports:
-      - "8080:80"
+      - "${WEB_PORT:-8080}:80"
     environment:
       DB_HOST: db
       DB_NAME: drupal
@@ -17,6 +17,9 @@ services:
       # search (Serper.dev) for the Content scan.
       TAVILY_API_KEY: ${TAVILY_API_KEY:-}
       SERPER_API_KEY: ${SERPER_API_KEY:-}
+      # Admin password for site install (default "admin" for local dev;
+      # ALWAYS set a strong one for a public demo).
+      ADMIN_PASS: ${ADMIN_PASS:-admin}
       OLLAMA_URL: http://ollama:11434
       # Comma-separated models to pull at first boot. Swap for the models
       # revealed at the kickoff.

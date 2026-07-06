@@ -1,0 +1,7 @@
+file 'clip01-essay.mp4'
+file 'clip02-results.mp4'
+file 'clip03-amd.mp4'
+file 'clip04-config.mp4'
+file 'clip05-trusted.mp4'
+file 'clip06-article.mp4'
+file 'clip07-drupalorg.mp4'

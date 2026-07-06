@@ -111,7 +111,11 @@ if (!$exists($essay_title)) {
       bridge, and the physicist James Holloway, who won the Nobel Prize in
       Physics in 1989 for his discovery of quantum tunneling in
       semiconductors. Few institutions can claim such a record of
-      unbroken achievement.',
+      unbroken achievement. '
+      // Verbatim Darwin, unattributed: bait for the plagiarism check —
+      // single line on purpose so the exact-phrase web search matches.
+      . 'There is grandeur in this view of life, with its several powers, having been originally breathed into a few forms or into one; and that, whilst this planet has gone cycling on according to the fixed law of gravity, from so simple a beginning endless forms most beautiful and most wonderful have been, and are being, evolved.'
+      . ' Aldford embodies that same endless evolution.',
       'format' => 'basic_html',
     ],
     'status' => 1,
@@ -140,7 +144,8 @@ if (!$exists($landing_title)) {
       <em>/admin/reports/ai-router-decisions</em>: note the
       <strong>AMD Instinct GPU (ROCm + vLLM)</strong> server.</li>
       </ol>
-      <p>Login: admin / admin.</p>',
+      <p>Log in with the credentials provided in the submission (or
+      admin/admin on a local docker compose boot).</p>',
       'format' => 'full_html',
     ],
     'status' => 1,

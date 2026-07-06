@@ -11,7 +11,7 @@ echo "--- Installing Drupal..."
 drush site-install standard \
   --db-url="mysql://$DB_USER:$DB_PASSWORD@$DB_HOST/$DB_NAME" \
   --site-name="Drupal AI Factchecker on AMD" \
-  --account-name=admin --account-pass=admin --account-mail=admin@example.com \
+  --account-name=admin --account-pass="${ADMIN_PASS:-admin}" --account-mail=admin@example.com \
   --yes
 
 echo "--- Enabling modules..."
@@ -54,6 +54,9 @@ drush scr /hackathon-scripts/create-demo.php || true
 
 echo "--- Factcheck (evidence index + models)..."
 drush scr /hackathon-scripts/provision-factcheck.php
+
+echo "--- Trusted sites (recipes + seeds)..."
+drush scr /hackathon-scripts/provision-trusted-sites.php || true
 
 echo "--- Indexing evidence corpus..."
 drush search-api:index || echo "WARNING: indexing failed"

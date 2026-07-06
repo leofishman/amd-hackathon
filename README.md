@@ -79,6 +79,18 @@ hardware — no SaaS, no third-party data processing agreement.
 Without `AMD_VLLM_URL` the stack falls back to a bundled Ollama container
 (gemma3:4b, CPU) so the demo runs anywhere.
 
+### Optional API keys
+
+Two more `.env` variables unlock the remaining checks — both optional, the
+factcheck against the local corpus works without them:
+
+- `TAVILY_API_KEY` — web evidence fallback + the distrust/tainted check.
+- `SERPER_API_KEY` — the verbatim plagiarism search (the demo essay ends
+  with an unattributed Darwin sentence planted for it to find).
+
+Keys are wired through the Key module's `env` provider: values live only
+in the environment, never in config or the database.
+
 ## Why this beats the closed incumbents
 
 - **Closed tools can't see your corpus.** Verdicts here are grounded in the

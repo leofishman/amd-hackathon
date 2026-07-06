@@ -43,11 +43,12 @@ trusted/distrusted domains) y la lista de routes.
 
 > "Everything is configuration, not code: which models, which evidence
 > sources, which domains to trust — and which domains count *against* a
-> claim when they echo it. It's GPL, published on drupal.org, built on the
-> Drupal AI ecosystem. For any university already on Drupal, this is a
-> module install away."
+> claim when they echo it. It's GPL, published on drupal.org as the
+> Universal AI Provider module — here is the source and the factcheck
+> implementation on the project page. For any university already on
+> Drupal, this is a module install away."
 
-Cierre, pantalla con el nombre del proyecto + URL del repo:
+Cierre, pantalla con el nombre del proyecto + URL del repo + página del módulo:
 
 > "Drupal AI Factchecker — claim-level verification, on your corpus, on AMD."
 

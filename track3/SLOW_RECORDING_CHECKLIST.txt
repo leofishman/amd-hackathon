@@ -1,0 +1,27 @@
+GRABACIÓN LENTA - CHECKLIST RÁPIDO (seguí en orden)
+
+Prep:
+- localhost:8080  (admin/admin)
+- Zoom 110-125%
+- Factcheck del ensayo ya corrido
+- Terminal del notebook AMD abierta (rocm-smi + vllm)
+- Pestañas listas
+
+1. Essay (node/5) .......................... QUEDATE 20-25s + scroll lento
+2. Content scan (node/5/factcheck) ......... QUEDATE 50-70s total
+   - Mostrar 1875 CONTRADICTED
+   - Manuscritos CONTRADICTED
+   - Nobel CONTRADICTED
+   - AI likelihood
+   - Darwin plagiarism (quedate 8-10s)
+3. Notebook terminal ....................... 10-15s (rocm-smi / vllm)
+4. AI Router Decisions ..................... 12-18s (mostrar chosen_model amd_vllm + gemma)
+5. Factcheck settings ...................... 12-15s
+6. Trusted sites ........................... 10-12s
+7. Un artículo del corpus .................. 8-10s
+8. https://www.drupal.org/project/ai_provider_universal   ← QUEDATE 25-35s (el cierre)
+   Mostrar repo + factcheck.md
+
+Grabá mudo. Nombre sugerido: slow-raw-2026-07-07.mkv
+
+Cuando termines avisame y extraigo los frames + armo el corte perfecto.
