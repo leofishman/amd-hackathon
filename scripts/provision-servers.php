@@ -28,7 +28,40 @@ if (getenv('FIREWORKS_API_KEY')) {
   }
 }
 
+// Optional API keys for the Content scan (web evidence + plagiarism),
+// same env-provider pattern as Fireworks: never written to the database.
+foreach (['TAVILY_API_KEY' => 'tavily_api_key', 'SERPER_API_KEY' => 'serper_api_key'] as $env => $key_id) {
+  if (getenv($env) && !$etm->getStorage('key')->load($key_id)) {
+    $etm->getStorage('key')->create([
+      'id' => $key_id,
+      'label' => str_replace('_', ' ', ucfirst($key_id)),
+      'key_type' => 'authentication',
+      'key_provider' => 'env',
+      'key_provider_settings' => [
+        'env_variable' => $env,
+        'base64_encoded' => FALSE,
+        'strip_line_breaks' => TRUE,
+      ],
+    ])->save();
+    echo "Created key: $key_id (env provider)\n";
+  }
+}
+
 $servers = $etm->getStorage('ai_universal_server');
+
+// Track 3: vLLM on the AMD GPU notebook (ROCm), OpenAI-compatible.
+if (($amd_url = getenv('AMD_VLLM_URL')) && !$servers->load('amd_vllm')) {
+  $parts = parse_url(rtrim(preg_replace('~/v1/?$~', '', $amd_url), '/'));
+  $servers->create([
+    'id' => 'amd_vllm',
+    'label' => 'AMD Instinct GPU (ROCm + vLLM)',
+    'backend' => 'openai_compatible',
+    'host_name' => ($parts['scheme'] ?? 'http') . '://' . ($parts['host'] ?? $amd_url),
+    'port' => (string) ($parts['port'] ?? (($parts['scheme'] ?? '') === 'https' ? 443 : 80)),
+    'timeout' => 120,
+  ])->save();
+  echo "Created server: amd_vllm ($amd_url)\n";
+}
 
 if (!$servers->load('local_ollama')) {
   $servers->create([
@@ -37,7 +70,7 @@ if (!$servers->load('local_ollama')) {
     'backend' => 'openai_compatible',
     'host_name' => 'http://ollama',
     'port' => '11434',
-    'timeout' => 60,
+    'timeout' => 120,
   ])->save();
   echo "Created server: local_ollama\n";
 }
@@ -48,7 +81,7 @@ if (getenv('FIREWORKS_API_KEY') && !$servers->load('fireworks')) {
     'label' => 'Fireworks (remote)',
     'backend' => 'fireworks',
     'api_key' => 'fireworks_api_key',
-    'timeout' => 60,
+    'timeout' => 120,
   ])->save();
   echo "Created server: fireworks\n";
 }

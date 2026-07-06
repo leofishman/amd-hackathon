@@ -1,0 +1,1 @@
+AMD vLLM endpoint (Qwen/Qwen2.5-7B-Instruct via ROCm+vLLM on radeon-global.anruicloud.com), wired as ai_universal_server 'amd_vllm'. Factcheck extractor/checker run on it; routing decisions above show chosen_model=amd_vllm__qwen_qwen2_5_7b_instruct.

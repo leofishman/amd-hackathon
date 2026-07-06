@@ -15,6 +15,7 @@ RUN composer require --no-interaction \
       drupal/ai \
       drupal/key \
       drupal/eca \
+      drupal/search_api \
       drupal/ai_provider_universal:1.0.x-dev
 ENV PATH="/opt/drupal/vendor/bin:${PATH}"
 

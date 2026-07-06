@@ -1,3 +1,13 @@
+# Secrets / machine-local
 .env
+.env.*
+!.env.example
+
+# Big binaries that don't belong in git
 *.tar
+*.mp4
+*.mkv
+
+# Junk
 __pycache__/
+.DS_Store

@@ -9,10 +9,18 @@ services:
       DB_USER: drupal
       DB_PASSWORD: drupal
       FIREWORKS_API_KEY: ${FIREWORKS_API_KEY:-}
+      # Track 3: OpenAI-compatible endpoint served by vLLM on the AMD GPU
+      # notebook (see track3/NOTEBOOK_RUNBOOK.md). When set, factcheck
+      # extraction/verdicts run on AMD hardware.
+      AMD_VLLM_URL: ${AMD_VLLM_URL:-}
+      # Optional: web evidence fallback (Tavily) and verbatim plagiarism
+      # search (Serper.dev) for the Content scan.
+      TAVILY_API_KEY: ${TAVILY_API_KEY:-}
+      SERPER_API_KEY: ${SERPER_API_KEY:-}
       OLLAMA_URL: http://ollama:11434
       # Comma-separated models to pull at first boot. Swap for the models
       # revealed at the kickoff.
-      OLLAMA_MODELS: ${OLLAMA_MODELS:-gemma3:1b}
+      OLLAMA_MODELS: ${OLLAMA_MODELS:-gemma3:4b}
       # Local model (entity id) that judges answers before they are
       # returned; rejection escalates to the best route candidate. Empty =
       # disabled. Editable later on the route form.

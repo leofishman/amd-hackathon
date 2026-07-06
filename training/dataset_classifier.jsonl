@@ -1,0 +1,164 @@
+{"prompt": "What is the capital of France?", "label": "simple"}
+{"prompt": "Convert 25 degrees Celsius to Fahrenheit.", "label": "simple"}
+{"prompt": "Who wrote the novel 1984?", "label": "simple"}
+{"prompt": "List the first 5 prime numbers.", "label": "simple"}
+{"prompt": "What does the acronym CPU stand for?", "label": "simple"}
+{"prompt": "Translate 'Hello, how are you?' to Spanish.", "label": "simple"}
+{"prompt": "Summarize this in one sentence: The cat sat on the mat.", "label": "simple"}
+{"prompt": "Is 17 a prime number?", "label": "simple"}
+{"prompt": "What year did World War II end?", "label": "simple"}
+{"prompt": "Rewrite this sentence to be more formal: 'Hey, can you help me real quick?'", "label": "simple"}
+{"prompt": "Prove that there are infinitely many prime numbers.", "label": "complex"}
+{"prompt": "Write a Python function to solve the traveling salesman problem for 10 cities using dynamic programming.", "label": "complex"}
+{"prompt": "Explain step by step why the sky is blue, including the physics of Rayleigh scattering.", "label": "complex"}
+{"prompt": "Debug this code and explain the bug: def add(a, b): return a - b", "label": "complex"}
+{"prompt": "Derive the formula for the sum of an arithmetic series from first principles.", "label": "complex"}
+{"prompt": "Analyze the economic impact of tariffs on imported steel in a small open economy using supply and demand graphs.", "label": "complex"}
+{"prompt": "Write a short story where the main character faces a moral dilemma involving AI ethics.", "label": "complex"}
+{"prompt": "Compare and contrast the philosophies of Nietzsche and Schopenhauer on the concept of will.", "label": "complex"}
+{"prompt": "Given a 500-word article about climate change, identify the 3 weakest arguments and explain why.", "label": "complex"}
+{"prompt": "Design a REST API for a social media platform including endpoints for posts, comments, likes, and user authentication with rate limiting.", "label": "complex"}
+{"prompt": "What is 2 + 2?", "label": "simple"}
+{"prompt": "Name the colors of the rainbow.", "label": "simple"}
+{"prompt": "How many legs does a spider have?", "label": "simple"}
+{"prompt": "What is the square root of 16?", "label": "simple"}
+{"prompt": "Convert 100 kilometers to miles.", "label": "simple"}
+{"prompt": "Who painted the Mona Lisa?", "label": "simple"}
+{"prompt": "What is the chemical symbol for gold?", "label": "simple"}
+{"prompt": "Spell the word 'rhythm' backwards.", "label": "simple"}
+{"prompt": "What is the current year?", "label": "simple"}
+{"prompt": "List three fruits that are red.", "label": "simple"}
+{"prompt": "Solve the equation 2x + 5 = 15 for x.", "label": "simple"}
+{"prompt": "Using calculus, find the maximum of the function f(x) = -x^2 + 4x + 1 and prove it is a maximum.", "label": "complex"}
+{"prompt": "Implement a transformer model from scratch in PyTorch, including multi-head attention and positional encoding, and train it on a small translation dataset.", "label": "complex"}
+{"prompt": "Critically analyze the impact of social media algorithms on democratic discourse, citing at least three academic studies.", "label": "complex"}
+{"prompt": "Design a distributed system for a global ride-sharing app that handles 1 million concurrent users, including consistency models and failure recovery.", "label": "complex"}
+{"prompt": "Explain quantum entanglement and its implications for faster-than-light communication, addressing common misconceptions.", "label": "complex"}
+{"prompt": "Write a formal proof that the halting problem is undecidable.", "label": "complex"}
+{"prompt": "Compare the macroeconomic policies of Keynes and Hayek, and apply them to the 2008 financial crisis.", "label": "complex"}
+{"prompt": "Create a novel machine learning architecture for few-shot learning in medical image diagnosis and justify your design choices with references.", "label": "complex"}
+{"prompt": "Analyze this 800-word legal contract for potential loopholes and suggest specific rewordings to close them.", "label": "complex"}
+{"prompt": "What is photosynthesis?", "label": "simple"}
+{"prompt": "How do you make a peanut butter sandwich?", "label": "simple"}
+{"prompt": "What is the boiling point of water at sea level?", "label": "simple"}
+{"prompt": "Name the seven continents.", "label": "simple"}
+{"prompt": "What does HTTP stand for?", "label": "simple"}
+{"prompt": "Convert 50% to a decimal.", "label": "simple"}
+{"prompt": "Who is the current president of the United States?", "label": "simple"}
+{"prompt": "What is 15% of 200?", "label": "simple"}
+{"prompt": "Spell 'accommodation'.", "label": "simple"}
+{"prompt": "What is the opposite of 'hot'?", "label": "simple"}
+{"prompt": "Develop a complete strategy for a startup to achieve product-market fit in the AI tooling space within 18 months, including metrics, experiments, and pivot triggers.", "label": "complex"}
+{"prompt": "Solve this system of differential equations and interpret the results in the context of population dynamics: dx/dt = x - xy, dy/dt = -y + xy.", "label": "complex"}
+{"prompt": "Write a 1000-word essay arguing for or against the use of AI in judicial sentencing, supported by evidence from at least 5 real-world cases or studies.", "label": "complex"}
+{"prompt": "Reverse engineer this obfuscated JavaScript snippet and explain what it does at each step, then suggest security improvements.", "label": "complex"}
+{"prompt": "Design an experiment to test whether large language models exhibit emergent abilities or if they are just smooth scaling, including controls and statistical analysis.", "label": "complex"}
+{"prompt": "Prove or disprove: In any group of 6 people, there are either 3 mutual friends or 3 mutual strangers (Ramsey theory).", "label": "complex"}
+{"prompt": "Create a business plan for a new cryptocurrency that solves a real problem in supply chain traceability, including tokenomics and regulatory considerations.", "label": "complex"}
+{"prompt": "Given this patient's symptoms and history, provide a differential diagnosis ranked by probability and recommend next diagnostic steps (use medical reasoning).", "label": "complex"}
+{"prompt": "What time is it?", "label": "simple"}
+{"prompt": "Is the sky blue?", "label": "simple"}
+{"prompt": "Add 7 and 8.", "label": "simple"}
+{"prompt": "What is the first letter of the alphabet?", "label": "simple"}
+{"prompt": "How many days are in a week?", "label": "simple"}
+{"prompt": "Translate 'good morning' to French.", "label": "simple"}
+{"prompt": "What color is an orange?", "label": "simple"}
+{"prompt": "Count to 5.", "label": "simple"}
+{"prompt": "What is 10 divided by 2?", "label": "simple"}
+{"prompt": "Name one planet in our solar system.", "label": "simple"}
+{"prompt": "Using formal methods, verify that this concurrent algorithm is deadlock-free and provide the full proof.", "label": "complex"}
+{"prompt": "Build a compiler for a small language from lexer to code generation, including type checking and optimization passes, with full source code and tests.", "label": "complex"}
+{"prompt": "Evaluate the long-term geopolitical consequences of climate migration on Europe and propose a multi-stakeholder policy framework.", "label": "complex"}
+{"prompt": "Deconstruct this philosophical argument and reconstruct it in predicate logic, identifying any fallacies.", "label": "complex"}
+{"prompt": "Create an original mathematical conjecture inspired by number theory and provide initial evidence or counterexamples.", "label": "complex"}
+{"prompt": "Design a zero-knowledge proof system for verifying that a person is over 18 without revealing their exact age or identity.", "label": "complex"}
+{"prompt": "Analyze the narrative structure of this novel excerpt and rewrite it from three different unreliable narrator perspectives.", "label": "complex"}
+{"prompt": "Develop a reinforcement learning agent for a complex game environment and train it to superhuman level, documenting the architecture and training process.", "label": "complex"}
+{"prompt": "What is the meaning of life?", "label": "simple"}
+{"prompt": "What is 9 + 10?", "label": "simple"}
+{"prompt": "Name the first three letters of the English alphabet.", "label": "simple"}
+{"prompt": "How many sides does a triangle have?", "label": "simple"}
+{"prompt": "What is the past tense of 'run'?", "label": "simple"}
+{"prompt": "Convert 3/4 to a decimal.", "label": "simple"}
+{"prompt": "What is the largest ocean on Earth?", "label": "simple"}
+{"prompt": "Spell 'necessary'.", "label": "simple"}
+{"prompt": "What is 100 divided by 4?", "label": "simple"}
+{"prompt": "Name a mammal that can fly.", "label": "simple"}
+{"prompt": "Design a scalable microservices architecture for a video streaming platform supporting 10 million daily active users, including data consistency, caching strategy, and global CDN.", "label": "complex"}
+{"prompt": "Using category theory, explain the concept of monads and provide a practical example in Haskell or Scala.", "label": "complex"}
+{"prompt": "Critique the methodological flaws in this psychology paper's experimental design and suggest improvements for replicability.", "label": "complex"}
+{"prompt": "Develop a novel consensus algorithm for a blockchain that improves on Proof of Stake in terms of energy efficiency and resistance to long-range attacks, with formal proofs.", "label": "complex"}
+{"prompt": "Given a large corpus of legal documents, extract all obligations, deadlines, and parties involved, then build a timeline and risk assessment.", "label": "complex"}
+{"prompt": "Prove that the square root of 2 is irrational using a proof by contradiction, and then generalize it to other non-square integers.", "label": "complex"}
+{"prompt": "Create an original short film concept that explores themes of identity in the age of deepfakes, including plot, key scenes, and visual style notes.", "label": "complex"}
+{"prompt": "Analyze the geopolitical implications of rare earth mineral supply chains and propose a diversified sourcing strategy for the European Union.", "label": "complex"}
+{"prompt": "Implement a custom garbage collector in C for a simple Lisp interpreter and benchmark it against the system's malloc/free.", "label": "complex"}
+{"prompt": "Evaluate the ethical implications of using AI for predictive policing, drawing on at least four real-world case studies and philosophical frameworks.", "label": "complex"}
+{"prompt": "What is your name?", "label": "simple"}
+{"prompt": "How old are you?", "label": "simple"}
+{"prompt": "What day is it today?", "label": "simple"}
+{"prompt": "Is water wet?", "label": "simple"}
+{"prompt": "Count the number of words in this sentence.", "label": "simple"}
+{"prompt": "What is the color of the sky on a clear day?", "label": "simple"}
+{"prompt": "Add one plus one.", "label": "simple"}
+{"prompt": "What is the opposite of cold?", "label": "simple"}
+{"prompt": "Name a vegetable that is orange.", "label": "simple"}
+{"prompt": "What is 5 times 5?", "label": "simple"}
+{"prompt": "Derive the Black-Scholes equation from first principles and discuss its assumptions and limitations in real markets.", "label": "complex"}
+{"prompt": "Write a complete operating system kernel in Rust that supports basic multitasking, memory management, and a simple filesystem, with full source and documentation.", "label": "complex"}
+{"prompt": "Synthesize a new theory of consciousness that integrates insights from neuroscience, philosophy of mind, and quantum mechanics, and outline testable predictions.", "label": "complex"}
+{"prompt": "Create a detailed plan for a Mars colony that is self-sustaining within 10 years, including architecture, life support, governance, and economic model.", "label": "complex"}
+{"prompt": "Formalize and prove the correctness of a concurrent data structure (e.g., lock-free stack) using separation logic or another formal method.", "label": "complex"}
+{"prompt": "Design a machine learning system to detect deepfake videos in real-time on edge devices, including model architecture, training strategy, and robustness to adversarial attacks.", "label": "complex"}
+{"prompt": "Analyze the long-term societal impacts of widespread automation on employment and propose policy interventions based on historical precedents.", "label": "complex"}
+{"prompt": "Develop an original cryptographic protocol for secure multi-party computation in a blockchain setting and prove its security properties.", "label": "complex"}
+{"prompt": "Write a comprehensive review of the literature on quantum error correction and propose a novel code with improved thresholds.", "label": "complex"}
+{"prompt": "What is the capital of Spain?", "label": "simple"}
+{"prompt": "How many continents are there?", "label": "simple"}
+{"prompt": "What is 3 multiplied by 4?", "label": "simple"}
+{"prompt": "Name the largest mammal.", "label": "simple"}
+{"prompt": "What color is grass usually?", "label": "simple"}
+{"prompt": "Spell 'beautiful'.", "label": "simple"}
+{"prompt": "What is the next number after 10?", "label": "simple"}
+{"prompt": "Is the Earth round?", "label": "simple"}
+{"prompt": "How do you say 'thank you' in Japanese?", "label": "simple"}
+{"prompt": "What is 20 minus 5?", "label": "simple"}{"prompt": "What is 5 + 3?", "label": "simple"}
+{"prompt": "Define photosynthesis in one sentence.", "label": "simple"}
+{"prompt": "Is a square a rectangle?", "label": "simple"}
+{"prompt": "Name three countries in Europe.", "label": "simple"}
+{"prompt": "What is the chemical formula for water?", "label": "simple"}
+{"prompt": "How many legs does a dog have?", "label": "simple"}
+{"prompt": "Convert 1 hour to minutes.", "label": "simple"}
+{"prompt": "What color is the sun?", "label": "simple"}
+{"prompt": "Spell 'computer'.", "label": "simple"}
+{"prompt": "What is 100 - 25?", "label": "simple"}
+{"prompt": "Explain the difference between mitosis and meiosis with diagrams and key differences in genetic outcomes.", "label": "complex"}
+{"prompt": "Design a database schema for an e-commerce platform with users, products, orders, and reviews, including normalization and indexing strategy.", "label": "complex"}
+{"prompt": "Critique the use of GDP as a measure of national well-being and propose alternative metrics with supporting data.", "label": "complex"}
+{"prompt": "Implement a red-black tree in Java and analyze its time complexity for insert, delete, and search operations.", "label": "complex"}
+{"prompt": "Analyze the causes of World War I from economic, political, and social perspectives, citing primary sources.", "label": "complex"}
+{"prompt": "Develop a marketing strategy for launching a new electric vehicle in emerging markets, including SWOT analysis and budget allocation.", "label": "complex"}
+{"prompt": "Prove the fundamental theorem of calculus and provide two example applications in physics.", "label": "complex"}
+{"prompt": "Create a neural network architecture for image segmentation in medical MRI scans and justify choices for loss function and data augmentation.", "label": "complex"}
+{"prompt": "Discuss the philosophical implications of determinism vs free will in light of modern neuroscience findings.", "label": "complex"}
+{"prompt": "Design an algorithm for real-time fraud detection in credit card transactions using machine learning, including feature engineering and model evaluation metrics.", "label": "complex"}
+{"prompt": "What is the largest planet in our solar system?", "label": "simple"}
+{"prompt": "How do you say hello in French?", "label": "simple"}
+{"prompt": "What is 12 divided by 3?", "label": "simple"}
+{"prompt": "Name a type of fruit that is yellow.", "label": "simple"}
+{"prompt": "What does 'democracy' mean in simple terms?", "label": "simple"}
+{"prompt": "Is the number 9 odd or even?", "label": "simple"}
+{"prompt": "What is the main ingredient in bread?", "label": "simple"}
+{"prompt": "How many minutes are in an hour?", "label": "simple"}
+{"prompt": "What is the opposite of 'big'?", "label": "simple"}
+{"prompt": "List two animals that live in the ocean.", "label": "simple"}
+{"prompt": "Create a comprehensive plan for sustainable urban development in a city of 5 million, incorporating renewable energy, public transport, green spaces, and affordable housing with cost estimates and timeline.", "label": "complex"}
+{"prompt": "Using game theory, analyze the prisoner's dilemma and extend it to a multi-player scenario in international trade negotiations.", "label": "complex"}
+{"prompt": "Write a research proposal for studying the effects of social media on adolescent mental health, including methodology, sample size, ethical considerations, and statistical analysis plan.", "label": "complex"}
+{"prompt": "Derive the Navier-Stokes equations from conservation laws and discuss their applications and challenges in computational fluid dynamics for turbulent flows.", "label": "complex"}
+{"prompt": "Evaluate the impact of artificial intelligence on the future of work, drawing on economic data, case studies from multiple industries, and policy recommendations.", "label": "complex"}
+{"prompt": "Design a secure communication protocol for IoT devices in a smart city, including encryption, key management, and resistance to common attacks like man-in-the-middle.", "label": "complex"}
+{"prompt": "Compare and contrast the theories of relativity and quantum mechanics, highlighting areas of conflict and ongoing efforts toward unification like string theory.", "label": "complex"}
+{"prompt": "Create an original algorithm for optimizing supply chain logistics under uncertainty, using stochastic programming and machine learning for demand forecasting.", "label": "complex"}
+{"prompt": "Analyze the role of propaganda in historical conflicts and propose a framework for detecting it in modern digital media using NLP techniques.", "label": "complex"}
+{"prompt": "Develop a full-stack web application for collaborative document editing with real-time synchronization, conflict resolution, and user permissions, including frontend, backend, and database design.", "label": "complex"}

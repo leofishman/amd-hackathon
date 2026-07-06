@@ -10,12 +10,15 @@ echo "=== AMD Hackathon setup ==="
 echo "--- Installing Drupal..."
 drush site-install standard \
   --db-url="mysql://$DB_USER:$DB_PASSWORD@$DB_HOST/$DB_NAME" \
-  --site-name="AMD Token-Efficient Agent" \
+  --site-name="Drupal AI Factchecker on AMD" \
   --account-name=admin --account-pass=admin --account-mail=admin@example.com \
   --yes
 
 echo "--- Enabling modules..."
-drush pm:enable key ai eca views ai_provider_universal \
+# rest+serialization first: the router log view ships a rest_export display
+# and older module releases don't declare the dependency (crash on install).
+drush pm:enable rest serialization --yes
+drush pm:enable key ai eca views field text search_api search_api_db ai_provider_universal \
   ai_provider_universal_router ai_provider_universal_factcheck amd_hackathon --yes
 
 echo "--- Pulling local models: $OLLAMA_MODELS"
@@ -30,6 +33,9 @@ drush scr /hackathon-scripts/provision-servers.php
 
 echo "--- Discovering models..."
 drush aip:discover-models local_ollama || echo "WARNING: ollama discovery failed"
+if [ -n "$AMD_VLLM_URL" ]; then
+  drush aip:discover-models amd_vllm || echo "WARNING: AMD vLLM discovery failed"
+fi
 if [ -n "$FIREWORKS_API_KEY" ]; then
   drush aip:discover-models fireworks || echo "WARNING: fireworks discovery failed"
 fi
@@ -45,6 +51,12 @@ drush pm:enable big_pipe --yes
 
 echo "--- Demo content..."
 drush scr /hackathon-scripts/create-demo.php || true
+
+echo "--- Factcheck (evidence index + models)..."
+drush scr /hackathon-scripts/provision-factcheck.php
+
+echo "--- Indexing evidence corpus..."
+drush search-api:index || echo "WARNING: indexing failed"
 
 drush cache:rebuild
 echo "=== Setup complete ==="

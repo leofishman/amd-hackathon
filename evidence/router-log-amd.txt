@@ -1,0 +1,2 @@
+1	hybrid_chat	simple	amd_vllm__qwen_qwen2_5_7b_instruct	18	0
+

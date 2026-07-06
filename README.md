@@ -1,161 +1,111 @@
-# Hybrid Token-Efficient Routing Agent — Drupal AI Router
+# Drupal AI Factchecker — claim-level content verification on AMD
 
-**AMD Developer Hackathon ACT II · Track 1 · Team "Drupal AI Router"**
+## Submission facts
 
-A hybrid routing agent that decides, per task and in real time, between
-**local models (zero remote tokens)** and **remote models (Fireworks)** —
-built not as a standalone script but as configuration on top of
-[ai_provider_universal](https://www.drupal.org/project/ai_provider_universal),
-an open-source Drupal module with a cost-aware smart router, fact-checking
-and usage limits. The agent runs inside a real CMS used by governments and
-universities: every decision is configurable through a UI and logged for
-audit.
+| Field | Value |
+|---|---|
+| Hackathon | AMD Developer Hackathon ACT II (lablab.ai) |
+| Track | 3 — Unicorn / Open Innovation |
+| Team | Drupal AI Router (Leo Fishman) |
+| What it is | Content-integrity suite (factcheck + AI-likelihood + plagiarism) native to Drupal CMS |
+| AMD compute usage | All LLM inference (claim extraction + verdicts) served by vLLM 0.16 on ROCm 7.2 on an AMD Instinct GPU; wired into Drupal as the `amd_vllm` server. Evidence: [`evidence/`](evidence/) |
+| Core code | [ai_provider_universal](https://www.drupal.org/project/ai_provider_universal) — our GPL-2.0+ module on drupal.org (pre-existing work; the hackathon adds the AMD serving layer + university use case) |
+| Run the demo | `cp .env.example .env && docker compose up -d`, then http://localhost:8080 (admin/admin) |
+| Verify the claim yourself | Open node 5 → *Content scan* tab: 3 fabricated claims come back CONTRADICTED against the site's own indexed corpus |
+
+Universities pay heavily for plagiarism detection, but plagiarism tools only
+answer *"is it copied?"*. An AI-written essay is original text full of
+fabricated claims — invisible to every plagiarism scanner. This project
+answers the questions those tools can't: **is it true, and who wrote it?** —
+natively inside Drupal, the CMS those institutions already run, with all
+inference served by an **AMD Instinct GPU (ROCm 7.2 + vLLM)**.
+
+Built on [ai_provider_universal](https://www.drupal.org/project/ai_provider_universal),
+our GPL-2.0+ module published on drupal.org (months of prior work; this
+hackathon adds the AMD serving layer and the university use case).
+
+## What it does
+
+One click on any content node (the **Content scan** tab) runs three checks:
+
+1. **Factcheck** — atomic claim extraction → evidence retrieval → per-claim
+   verdict (`SUPPORTED` / `UNSUPPORTED` / `CONTRADICTED`) with an auditable
+   score. Evidence comes from the institution's **own indexed corpus first**
+   (Search API), the web second (Tavily, optional). Claims echoed only by
+   known-misinformation domains are marked *tainted* — counting against them.
+2. **AI-writing likelihood** — a 0–100 score with rationale (honestly
+   framed: a hint, not proof).
+3. **Verbatim plagiarism** — the text's most distinctive sentences searched
+   as exact phrases on the web (Serper, optional).
+
+Every model call and routing decision is logged and auditable at
+`/admin/reports/ai-router-decisions`. Everything — models, backends,
+evidence sources, trust lists — is Drupal configuration, not code.
 
 ## Quick start
 
 ```bash
-cp .env.example .env      # add FIREWORKS_API_KEY for remote escalation (optional)
-docker compose up -d      # first boot: installs Drupal, pulls the local model,
-                          # provisions servers + the smart route. ~2-3 min.
+cp .env.example .env    # optionally set AMD_VLLM_URL / TAVILY_API_KEY / SERPER_API_KEY
+docker compose up -d    # first boot installs + provisions everything (~3-4 min)
 ```
 
-Then send a task:
+Then open http://localhost:8080 (admin / admin). The front page explains the
+demo: a fictional university corpus (4 indexed articles) and a **student
+essay containing three fabricated claims**. Open the essay's *Content scan*
+tab and run the scan — the pipeline finds all three:
 
-```bash
-curl -s -X POST http://localhost:8080/agent/task \
-  -H 'Content-Type: application/json' \
-  -d '{"task": "What is the chemical symbol for gold?"}'
-```
+| Claim in the essay | Corpus says | Verdict |
+|---|---|---|
+| "founded in 1875" | founded in 1892 | CONTRADICTED |
+| "rare manuscripts tragically lost in the 1953 fire" | they survived | CONTRADICTED |
+| "James Holloway won the 1989 Nobel Prize" | no alumnus ever has | CONTRADICTED |
 
-```json
-{
-  "answer": "Au",
-  "routing": {
-    "route_id": "hybrid_chat",
-    "complexity": "simple",
-    "chosen_model": "local_ollama__gemma3_1b",
-    "candidates": "1",
-    "est_tokens": "12",
-    "est_cost": "0",
-    "est_cost_worst": "0"
-  },
-  "elapsed_ms": 3326
-}
-```
+True claims (three campuses, Elena Vasquez and the bridge) come back
+SUPPORTED — grounded in the university's own content, not model memory.
 
-Every response carries its own routing decision: which model was chosen,
-why (complexity tier), what it cost and what the worst eligible candidate
-would have cost. `est_cost: 0` means the task never left the box.
+## AMD compute
 
-## Entry points
+Set `AMD_VLLM_URL` in `.env` to an OpenAI-compatible endpoint served by
+vLLM on an AMD GPU (ROCm) and re-run `docker compose up -d`: the
+provisioning registers it as the **"AMD Instinct GPU (ROCm + vLLM)"**
+server, discovers its models, and points claim extraction and verdict
+checking at it. The decisions log then shows every inference call routed to
+AMD hardware. Hardware evidence (rocm-smi, vLLM startup log, decision log
+screenshots) lives in [`evidence/`](evidence/).
 
-| Door | Use | How |
-|------|-----|-----|
-| HTTP | scoring harness / automation | `POST /agent/task` with `{"task": "..."}` (or a raw text body) |
-| CLI | scoring harness / debugging | `docker compose exec web drush amd:task "..." --json` |
-| Web UI | humans | `http://localhost:8080` (admin / admin) |
+Privacy angle: student work never has to leave institution-controlled AMD
+hardware — no SaaS, no third-party data processing agreement.
 
-All doors share one service (`TaskRunner`): a single point of logic to
-re-map to whatever interface the evaluation requires.
+Without `AMD_VLLM_URL` the stack falls back to a bundled Ollama container
+(gemma3:4b, CPU) so the demo runs anywhere.
 
-## Agent strategy
+## Why this beats the closed incumbents
 
-The whole strategy is smart-route configuration — no agent code:
-
-- The route classifies each prompt (heuristics, or a local classifier
-  model — see below) and picks the **cheapest capable** candidate; local
-  models cost 0.
-- Optionally a **verifier model** (set `AGENT_VERIFIER_MODEL` in `.env`,
-  or edit the route form) judges every answer with one local yes/no call;
-  a rejection retries the task once with the best candidate. With
-  local-only cheap candidates this is the token-optimal pattern: **remote
-  tokens are only spent when the local answer demonstrably failed**.
-  Latency is free in the Track 1 scoring; remote tokens are not.
-- A broken verifier fails open (answer returned, warning logged) —
-  verification never sinks a response.
-
-### Complexity classification
-
-The `route` strategy classifies prompts with cheap heuristics (length
-threshold + reasoning cues). Optionally, a local model adjudicates the
-prompts heuristics consider simple:
-
-```bash
-docker compose exec web drush config:set \
-  ai_provider_universal_router.settings classifier_model <model_entity_id> -y
-```
-
-Empty value = pure heuristics. Any classifier failure falls back to
-heuristics; classification never breaks routing. This is the seam for a
-fine-tuned tiny Gemma router: train a LoRA, serve it in Ollama, point
-`classifier_model` (or `AGENT_VERIFIER_MODEL`) at it — no code changes.
-
-## How routing works
-
-1. Each model (local or remote) is a config entity with **cost per token,
-   quality tier (1–5) and context length** — prefilled at discovery, all
-   editable in the UI.
-2. A **smart route** lists candidate models and the minimum tier for
-   simple vs complex prompts. Local models cost 0.
-3. Per request, the router classifies complexity, filters candidates that
-   are capable enough, and picks the **cheapest capable** one. Simple task
-   → tiny local model, zero remote tokens. Complex task → escalates only
-   as far as needed.
-4. Optionally the route **fact-checks** the answer (claim extraction →
-   evidence → verdicts) and escalates to a better model when the support
-   score is too low.
-5. Every decision lands in a log table exposed as a Views page:
-   `/admin/reports/ai-router-decisions`.
-
-## Transparency for evaluation
-
-- Machine-readable: every `/agent/task` response embeds the routing row.
-- Human-readable: the decisions report lists timestamp, route, complexity,
-  chosen model, tokens, chosen vs worst-case cost.
-- Nothing is hardcoded: servers, models, costs, tiers, routes and limits
-  are Drupal config entities — judges can change any of them in the UI and
-  watch decisions change.
-
-## Security stance
-
-The task text is untrusted input:
-
-- It always travels as the `user` message; the system prompt pins the role
-  and instructs the model to ignore embedded instructions.
-- The runner **never executes** anything from model output — it returns
-  text plus metadata, full stop. The anonymous endpoint cannot touch site
-  state.
-- API keys live only in environment variables (Key module `env` provider);
-  they are never written to config or the database.
-- Optional fact-checking verifies claims against curated evidence — a
-  defense against manipulated answers.
+- **Closed tools can't see your corpus.** Verdicts here are grounded in the
+  institution's own indexed knowledge, with the evidence shown per claim.
+- **Closed tools are black boxes.** Here every decision — model, route,
+  cost, verdict — is logged, and the whole pipeline is GPL code you can read.
+- **Closed tools are another platform.** This is a module install on the
+  CMS already powering a large share of .edu and .gov sites.
 
 ## Layout
 
 ```
-docker-compose.yml        web (Drupal 11 + drush baked in) + db (MariaDB) + ollama
-Dockerfile                all composer deps installed at build time
-docker-entrypoint.sh      installs + provisions on first boot, idempotent
-scripts/
-  setup-hackathon.sh      site install, model pull, provisioning, perf tuning
-  provision-servers.php   Ollama (zero cost) + Fireworks (env key) servers
-  provision-route.php     builds the hybrid_chat route from discovered models
-modules/amd_hackathon/    TaskRunner service + HTTP controller + drush command
-training/                 LoRA fine-tuning pipeline for the classifier/verifier
-STRATEGY.md               decisions and kickoff checklist
+docker-compose.yml         web (Drupal 11) + db (MariaDB) + ollama (fallback)
+Dockerfile                 all PHP deps baked at build; module from drupal.org
+docker-entrypoint.sh       idempotent install + provisioning on first boot
+scripts/                   servers, factcheck, evidence index, demo content
+track3/                    submission assets: runbook, video script, deck prompt
+evidence/                  AMD hardware evidence (rocm-smi, vLLM logs, screenshots)
 ```
 
-## Tuning at the kickoff
-
-- `OLLAMA_MODELS` in `.env`: comma-separated models to pull at first boot.
-- Route tiers / candidates / fact-checking: `/admin/config/ai/universal/routes`
-  or edit `scripts/provision-route.php` and rebuild.
-- Harness in/out format: `modules/amd_hackathon/src/Controller/TaskController.php`.
+Roadmap: this provisioning becomes a Drupal **recipe**, making the
+factchecker a one-command install on any existing Drupal site.
 
 ## Built on
 
-- [Drupal 11](https://www.drupal.org) + [AI module](https://www.drupal.org/project/ai)
-- [ai_provider_universal](https://www.drupal.org/project/ai_provider_universal)
-  (our module: universal provider, smart router, factcheck — GPL-2.0+)
-- [Ollama](https://ollama.com) for local inference,
-  [Fireworks](https://fireworks.ai) for remote escalation
+[Drupal 11](https://www.drupal.org) · [Drupal AI](https://www.drupal.org/project/ai)
+· [ai_provider_universal](https://www.drupal.org/project/ai_provider_universal)
+(ours, GPL-2.0+) · [vLLM](https://github.com/vllm-project/vllm) on
+[ROCm](https://www.amd.com/en/products/software/rocm.html) ·
+[Ollama](https://ollama.com) (CPU fallback) · Search API
