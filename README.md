@@ -76,6 +76,13 @@ screenshots) lives in [`evidence/`](evidence/).
 Privacy angle: student work never has to leave institution-controlled AMD
 hardware — no SaaS, no third-party data processing agreement.
 
+**Runs on anything AMD.** The [live demo](https://amd-hackathon.fishman.work)
+is hosted on an AMD Ryzen AI 9 HX 370 mini-PC (Radeon 890M) running local
+models; the recorded verdicts ran on an AMD Instinct GPU with ROCm + vLLM.
+Same module, same configuration — switching between an edge mini-PC and a
+datacenter GPU is a dropdown, which is exactly the deployment range a
+university IT department needs.
+
 Without `AMD_VLLM_URL` the stack falls back to a bundled Ollama container
 (gemma3:4b, CPU) so the demo runs anywhere.
 

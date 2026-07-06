@@ -82,9 +82,8 @@ $pick = static function (string $server_id) use ($models): string {
   }
   return '';
 };
-// Prefer the model requested via OLLAMA_MODELS (the ollama volume may
-// hold older/smaller pulls from previous runs — 1b is too weak to extract
-// claims reliably).
+// Prefer AMD GPU server (minisforum ROCm Ollama or notebook vLLM) when
+// AMD_VLLM_URL is set. Falls back to the first OLLAMA_MODELS entry.
 $wanted = '';
 if ($raw = explode(',', (string) getenv('OLLAMA_MODELS'))[0] ?? '') {
   $wanted_id = 'local_ollama__' . preg_replace('/[^a-z0-9]+/', '_', strtolower(trim($raw)));

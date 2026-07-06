@@ -9,9 +9,11 @@ services:
       DB_USER: drupal
       DB_PASSWORD: drupal
       FIREWORKS_API_KEY: ${FIREWORKS_API_KEY:-}
-      # Track 3: OpenAI-compatible endpoint served by vLLM on the AMD GPU
-      # notebook (see track3/NOTEBOOK_RUNBOOK.md). When set, factcheck
-      # extraction/verdicts run on AMD hardware.
+      # Track 3: OpenAI-compatible endpoint for AMD GPU inference.
+      # Can be:
+      # - Remote notebook vLLM (AMD_VLLM_URL from cloudflared)
+      # - Minisforum Ollama with ROCm: http://host:11435/v1 (see MINISFORUM_ROCM.md)
+      # When set, factcheck prefers this server (cost 0, AMD label in logs).
       AMD_VLLM_URL: ${AMD_VLLM_URL:-}
       # Optional: web evidence fallback (Tavily) and verbatim plagiarism
       # search (Serper.dev) for the Content scan.

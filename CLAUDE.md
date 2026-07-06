@@ -1,7 +1,55 @@
 # AMD Hackathon ACT II — estado del proyecto
 
-**Actualizado: 2026-07-06** · Claude mantiene este archivo al día en cada
-hito de cada sesión. Leerlo primero al retomar trabajo.
+**Actualizado: 2026-07-06 (noche)** · Claude mantiene este archivo al día
+en cada hito de cada sesión. Leerlo primero al retomar trabajo.
+
+## ESTADO: listo para submit (deadline 2026-07-11, Leo apunta a 07-07)
+
+- **Video final**: `track3/final-piper.mp4` (1:47, cierra en drupalcode
+  mostrando factcheck.md — calza con el voiceover). Alternativa de voz:
+  montar audio de final-demo-improved sobre video piper. Subir a YouTube
+  (título/descripción ya entregados en el chat).
+- **Live demo**: https://amd-hackathon.fishman.work (MiniSforum,
+  ~/amd-hackathon-demo, puerto 8088, túnel cloudflared local — ruta en
+  ~/.cloudflared/config.yml). Usuario `judge` con permisos mínimos.
+  Passwords en scratchpad/demo-pass.txt de la sesión del 06-07 → Leo debe
+  guardarlos en su gestor. gemma3:4b local (CPU); factcheck verificado.
+- **Repo**: renombrado a `amd-hackathon` (typo arreglado). Commits
+  `60e0a1a` + `9968974` listos — **falta `git push`** (Leo).
+- **Módulo**: 4 commits pendientes de push a drupal.org 1.0.x (idioma,
+  parser línea-por-línea, assessments seed, docs de modelos verificados).
+- **Pendientes Leo (mañana)**: push ambos repos; PDF v2 del deck (prompt
+  en track3/GEMINI_DECK_PROMPT.md + capturas reales — usar frames del
+  video); keys Tavily/Serper por UI en el live demo; subir video; submit
+  en lablab con: repo + PDF + video + URL live demo + credenciales judge.
+
+## Notas para la sesión del 07-07
+
+- **Video v2 (Leo quiere regrabar con consejos de Grok)**: reusar la
+  escena de la notebook Instinct del material YA grabado
+  (track3/edits/ + raw-recording.mkv) — es la evidencia AMD fuerte.
+  Sumar toma de 5s del MiniSforum (`lscpu | grep "Model name"` →
+  "AMD Ryzen AI 9 HX 370 w/ Radeon 890M"). Grabar contra el live demo
+  público (URL real en la barra) en vez de localhost. Voiceovers TTS en
+  ~/voiceover-*.mp3; montaje: track3/mix-video.sh.
+- **Notebook**: cuota 4h se renueva cada 24h; licencia Gemma en HF ya
+  aceptada; runbook 15 min. Si no levanta, el plan B Ryzen AI ya está en
+  el README ("Runs on anything AMD"). NO usar Fireworks como claim AMD
+  (hardware no demostrable).
+- **Tag `1.0.0-alpha2`**: creado SOLO local en el módulo (error mío:
+  prematuro). Si mañana hay más commits, re-apuntarlo:
+  `git tag -d 1.0.0-alpha2 && git tag -a 1.0.0-alpha2` en el commit
+  final, recién ahí pushear tag + crear release node en drupal.org.
+- **Leo quiere poner Wikipedia y Reuters en negativo en el live demo**
+  (decisión editorial suya, la hace él por UI). Avisado: negativo =
+  distrust activo (claims echoed → tainted, -0.5 c/u), no "poco
+  confiable"; sugerido rep 1-2 con assessment citado para no confundir
+  jueces, pero es su call.
+- **Visión post-hackathon**: Leo ve producto vendible (universidades ya
+  en Drupal que pagan Turnitin). Bajas expectativas del hackathon en sí;
+  el producto queda igual. Posible continuación comercial.
+- Passwords del live demo: Leo los tiene en ~/demo-pass.txt (debe
+  moverlos a su gestor y borrar el archivo).
 
 ## Decisión de track (2026-07-06)
 

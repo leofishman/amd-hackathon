@@ -49,12 +49,14 @@ foreach (['TAVILY_API_KEY' => 'tavily_api_key', 'SERPER_API_KEY' => 'serper_api_
 
 $servers = $etm->getStorage('ai_universal_server');
 
-// Track 3: vLLM on the AMD GPU notebook (ROCm), OpenAI-compatible.
+// Track 3: AMD GPU server (ROCm + vLLM or ROCm + Ollama on minisforum).
+// Set AMD_VLLM_URL to the OpenAI-compatible /v1 endpoint.
+// This gives you the "AMD Instinct GPU" label + cost 0 in decisions.
 if (($amd_url = getenv('AMD_VLLM_URL')) && !$servers->load('amd_vllm')) {
   $parts = parse_url(rtrim(preg_replace('~/v1/?$~', '', $amd_url), '/'));
   $servers->create([
     'id' => 'amd_vllm',
-    'label' => 'AMD Instinct GPU (ROCm + vLLM)',
+    'label' => 'AMD Instinct GPU (ROCm + Ollama/vLLM)',
     'backend' => 'openai_compatible',
     'host_name' => ($parts['scheme'] ?? 'http') . '://' . ($parts['host'] ?? $amd_url),
     'port' => (string) ($parts['port'] ?? (($parts['scheme'] ?? '') === 'https' ? 443 : 80)),

@@ -28,13 +28,13 @@ for model in ${OLLAMA_MODELS//,/ }; do
     || echo "    WARNING: pull of $model failed (ollama unreachable?)"
 done
 
-echo "--- Provisioning AI servers (local Ollama + Fireworks)..."
+echo "--- Provisioning AI servers (local Ollama + AMD GPU + Fireworks)..."
 drush scr /hackathon-scripts/provision-servers.php
 
 echo "--- Discovering models..."
 drush aip:discover-models local_ollama || echo "WARNING: ollama discovery failed"
 if [ -n "$AMD_VLLM_URL" ]; then
-  drush aip:discover-models amd_vllm || echo "WARNING: AMD vLLM discovery failed"
+  drush aip:discover-models amd_vllm || echo "WARNING: AMD server discovery failed"
 fi
 if [ -n "$FIREWORKS_API_KEY" ]; then
   drush aip:discover-models fireworks || echo "WARNING: fireworks discovery failed"
