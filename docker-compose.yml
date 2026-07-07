@@ -10,10 +10,11 @@ services:
       DB_PASSWORD: drupal
       FIREWORKS_API_KEY: ${FIREWORKS_API_KEY:-}
       # Track 3: OpenAI-compatible endpoint for AMD GPU inference.
-      # Can be:
-      # - Remote notebook vLLM (AMD_VLLM_URL from cloudflared)
-      # - Minisforum Ollama with ROCm: http://host:11435/v1 (see MINISFORUM_ROCM.md)
-      # When set, factcheck prefers this server (cost 0, AMD label in logs).
+      # Preferred for "AMD Instinct GPU" with cost 0 in decisions log.
+      # On minisforum (after killing external vLLM/llama.cpp):
+      #   AMD_VLLM_URL=http://172.17.0.1:11435/v1
+      # or http://host.docker.internal:11435/v1
+      # The compose ollama service now runs ollama/ollama:rocm on port 11435.
       AMD_VLLM_URL: ${AMD_VLLM_URL:-}
       # Optional: web evidence fallback (Tavily) and verbatim plagiarism
       # search (Serper.dev) for the Content scan.
@@ -56,9 +57,40 @@ services:
       retries: 5
 
   ollama:
-    image: ollama/ollama:latest
+    # ROCm-enabled Ollama for AMD GPUs (Minisforum Ryzen AI, etc.)
+    # On minisforum: first kill external vLLM / llama.cpp processes that are
+    # holding memory, then docker compose up -d. This service will use the GPU.
+    image: ollama/ollama:rocm
+    restart: unless-stopped
+    ports:
+      # Expose on host port 11435 so AMD_VLLM_URL=http://172.17.0.1:11435/v1 works
+      # from inside the web container and for external tools.
+      - "11435:11434"
+    devices:
+      - /dev/kfd
+      - /dev/dri
+    group_add:
+      - video
+    ipc: host
+    shm_size: 16gb
     volumes:
       - ollama_data:/root/.ollama
+    environment:
+      # For Ryzen AI 9 HX 370 + 890M iGPU (ROCm support is partial/experimental)
+      - OLLAMA_IGPU_ENABLE=1          # required, otherwise it drops the iGPU
+      - OLLAMA_FLASH_ATTENTION=1
+      - OLLAMA_KV_CACHE_TYPE=q4_0
+      - OLLAMA_NUM_PARALLEL=1
+      - OLLAMA_CONTEXT_LENGTH=8192    # keep modest to reduce CPU from cache mgmt + re-processing on iGPU
+      # Do NOT set HSA_OVERRIDE_GFX_VERSION inside the container unless testing —
+      # it can force CPU fallback on this APU. Let the rocm image auto-detect.
+
+    # Cap CPU cores so the host doesn't get pegged by llama-server threads
+    # (GPU still does the heavy lifting, VRAM stays low).
+    deploy:
+      resources:
+        limits:
+          cpus: '6'
 
 volumes:
   db_data:

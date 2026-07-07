@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "CLAUDE.md",
+                "file": "track3/tareasdeleo.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "CLAUDE"
+              "title": "tareasdeleo"
             }
           }
         ]
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "CLAUDE.md",
+                "file": "track3/tareasdeleo.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +104,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for CLAUDE"
+              "title": "Backlinks for tareasdeleo"
             }
           },
           {
@@ -113,12 +113,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "CLAUDE.md",
+                "file": "track3/tareasdeleo.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from CLAUDE"
+              "title": "Outgoing links from tareasdeleo"
             }
           },
           {
@@ -156,13 +156,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "CLAUDE.md",
+                "file": "track3/tareasdeleo.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of CLAUDE"
+              "title": "Outline of tareasdeleo"
             }
           }
         ]
@@ -185,12 +185,13 @@
   },
   "active": "cceecfbe3f09ad70",
   "lastOpenFiles": [
+    "track3/SLOW_RECORDING_PLAN.md",
+    "track3/tareasdeleo.md",
+    "CLAUDE.md",
     "Drupal AI Factchecker.pptx",
     "Unconfirmed 593185.crdownload",
     "track3/VIDEO_MIXING_PLAN.md",
     "tareasdeleo.md",
-    "track3/tareasdeleo.md",
-    "CLAUDE.md",
     "MINISFORUM_ROCM.md",
     "README.md"
   ]

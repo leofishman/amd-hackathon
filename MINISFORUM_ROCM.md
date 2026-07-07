@@ -1,9 +1,11 @@
 # Running Gemma on Minisforum with ROCm + Ollama (AMD GPU)
 
 ## Why this is important
-The notebook AMD has quota (4h/24). For reliable live demo + pitch ("runs on AMD Instinct GPU with ROCm"), run the model on your minisforum if it has a compatible AMD GPU.
+The notebook AMD has quota (4h/24). For reliable live demo + pitch ("runs on AMD Instinct GPU with ROCm"), run the model on your minisforum.
 
-Ollama + ROCm works well and exposes an OpenAI-compatible endpoint, so the existing `amd_vllm` server + factcheck logic works with almost no changes.
+The `docker-compose.yml` now includes a proper ROCm Ollama service. After killing external memory-hogging processes (vLLM, llama.cpp), just use `docker compose`.
+
+Ollama + ROCm exposes an OpenAI-compatible endpoint, so the existing `amd_vllm` server + factcheck logic works with almost no changes.
 
 ## 1. On minisforum: verify ROCm
 
@@ -15,63 +17,75 @@ ls /dev/kfd /dev/dri
 
 You should see your AMD GPU and the devices.
 
-## 2. Run Ollama with ROCm (recommended on a separate port)
+## 2. Run Ollama with ROCm via docker compose (recommended)
+
+The `docker-compose.yml` now has a proper `ollama` service using `ollama/ollama:rocm` with all the required device mappings, ipc, shm, etc.
+
+**On minisforum:**
+
+1. First kill the memory-hogging processes (vLLM, standalone llama.cpp, old ollama instances):
 
 ```bash
-docker run -d \
-  --name ollama-rocm \
-  --restart unless-stopped \
-  --device=/dev/kfd \
-  --device=/dev/dri \
-  --group-add video \
-  --ipc=host \
-  --shm-size 16g \
-  -v ollama-rocm:/root/.ollama \
-  -p 11435:11434 \
-  ollama/ollama:rocm
+pkill -f vllm || true
+pkill -f ollama || true
+pkill -f 'python.*llama' || true
+free -h
+rocm-smi
 ```
 
-Wait a bit, then pull a model. Previous successful size was gemma-3-12b:
+2. Make sure your `.env` has the right models and (optionally) AMD_VLLM_URL:
 
 ```bash
-docker exec -it ollama-rocm ollama pull gemma3:12b
-# or smaller if VRAM is tight:
-# docker exec -it ollama-rocm ollama pull gemma3:4b
+# .env
+OLLAMA_MODELS=gemma3:4b
+AMD_VLLM_URL=http://172.17.0.1:11435/v1
 ```
 
-Test the OpenAI compatible endpoint:
+3. Start (or restart) the stack:
+
+```bash
+docker compose up -d ollama
+# or full stack:
+# docker compose up -d
+```
+
+4. Pull model (it will now use ROCm):
+
+```bash
+docker compose exec ollama ollama pull gemma3:4b
+# or gemma3:12b if it fits
+```
+
+5. Test:
 
 ```bash
 curl http://localhost:11435/v1/models
 ```
 
+You should see the model listed. Watch `rocm-smi` in another terminal while it loads.
+
 ## 3. Wire it into the Drupal instance (on the same minisforum)
 
-Set the env var that the provisioning already understands:
+The compose already exposes the ROCm ollama on host port 11435.
+
+Set in your `.env` (or export):
 
 ```bash
-export AMD_VLLM_URL=http://localhost:11435/v1
+AMD_VLLM_URL=http://172.17.0.1:11435/v1
 ```
 
-If your Drupal is running in Docker Compose on the same host:
-
-- From inside the `web` container you may need `host.docker.internal` or the host IP.
-- Quick test from inside the web container:
-  ```bash
-  docker compose exec web curl -s http://host.docker.internal:11435/v1/models || echo "try host IP"
-  ```
-
-Common working value on many Linux hosts:
-`AMD_VLLM_URL=http://172.17.0.1:11435/v1` (docker0 bridge)
-
-Or run the ollama-rocm with `--network host` and use `http://localhost:11435/v1`.
-
-Then re-provision:
+Verify from inside the web container:
 
 ```bash
-drush scr /path/to/hackathon-scripts/provision-servers.php
+docker compose exec web curl -s $AMD_VLLM_URL/models | head -3
+```
+
+Then re-provision the servers and factcheck:
+
+```bash
+drush scr /hackathon-scripts/provision-servers.php
 drush aip:discover-models amd_vllm
-drush scr /path/to/hackathon-scripts/provision-factcheck.php
+drush scr /hackathon-scripts/provision-factcheck.php
 drush cr
 ```
 
@@ -79,13 +93,7 @@ Check:
 - `/admin/reports/ai-router-decisions` → should show the AMD-labeled server.
 - Content scan on the demo essay → should use the ROCm model (cost 0).
 
-## 4. Make it survive reboots
-
-Create a small systemd unit or just use the docker `--restart`.
-
-Example one-liner service (or use docker compose with an override).
-
-## 5. Fireworks as reliable backup
+## 4. Fireworks as reliable backup
 
 If ROCm is unstable or you run out of time:
 
@@ -95,23 +103,29 @@ export FIREWORKS_API_KEY=your_key_here
 
 The provisioning already creates the `fireworks` server when the key is present. The route will still prefer the cheap local/AMD one.
 
-## 6. In this repo (for future boots)
+## 5. In this repo (for future boots)
 
-Update your `.env` on minisforum:
+On the minisforum, put this in your `.env` next to `docker-compose.yml`:
 
 ```
-AMD_VLLM_URL=http://localhost:11435/v1
-# or the value that works from inside your containers
-OLLAMA_MODELS=gemma3:4b   # still used for the internal CPU ollama fallback
+AMD_VLLM_URL=http://172.17.0.1:11435/v1
+OLLAMA_MODELS=gemma3:4b
 ```
 
-The compose's internal `ollama` service stays as CPU fallback.
+Then just:
+
+```bash
+docker compose up -d
+```
+
+The ollama service is now the ROCm one.
 
 ## Notes / Gotchas
 
-- Gemma models can be large. 12B usually needs ~24-30GB VRAM in reasonable quant. Start with 4B or 12B and watch `rocm-smi` during load.
-- First pull can take time + bandwidth.
+- On the Ryzen AI 9 HX 370 (890M iGPU) start with **gemma3:4b**. The 12B may be tight.
+- Always kill external vLLM / old Ollama / llama.cpp processes first (they hold unified memory).
+- Watch `rocm-smi` while models load and during Content scans.
 - Ollama ROCm image uses the host's ROCm libraries.
-- In decisions log you will see the model id coming from the Ollama server (e.g. `amd_vllm__gemma3_12b` or similar) with cost 0. That's the important part for the pitch.
+- In decisions log you will see the model id coming from the Ollama server (e.g. `amd_vllm__gemma3_4b`) with cost 0.
 
 This gives you a persistent AMD GPU story without depending on the notebook quota.

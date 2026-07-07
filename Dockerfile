@@ -21,6 +21,7 @@ ENV PATH="/opt/drupal/vendor/bin:${PATH}"
 
 RUN { \
       echo "memory_limit=512M"; \
+      echo "max_execution_time=300"; \
       echo "opcache.enable=1"; \
       echo "opcache.memory_consumption=192"; \
     } > /usr/local/etc/php/conf.d/hackathon.ini
