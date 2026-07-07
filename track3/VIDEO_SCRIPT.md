@@ -37,7 +37,7 @@ vLLM; luego el server "AMD MI300 (ROCm + vLLM)" en la config de Drupal; luego
 > decision, audited. Sensitive student work never has to leave
 > university-controlled AMD hardware."
 
-## Escena 4 — Flexibilidad y cierre (1:50–2:40)
+## Escena 4 — Flexibility and closing (1:50–2:40)
 Pantalla: form de configuración del factcheck (modelos, evidence index,
 trusted/distrusted domains) y la lista de routes.
 

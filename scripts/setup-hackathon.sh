@@ -58,6 +58,9 @@ drush scr /hackathon-scripts/provision-factcheck.php
 echo "--- Trusted sites (recipes + seeds)..."
 drush scr /hackathon-scripts/provision-trusted-sites.php || true
 
+echo "--- Full demo content (varied examples)..."
+drush scr /hackathon-scripts/create-full-demo-content.php || true
+
 echo "--- Indexing evidence corpus..."
 drush search-api:index || echo "WARNING: indexing failed"
 

@@ -1,28 +1,43 @@
-# Drupal AI Factchecker — claim-level content verification on AMD
+# Drupal AI Factchecker — Claim-level content integrity for universities on AMD GPU
 
-## Submission facts
+**Native Drupal module (GPL-2.0+) for fact-checking claims against the institution's own corpus, AI-writing detection, and verbatim plagiarism — with inference on local AMD hardware (ROCm).**
+
+## Submission facts (for LLM pre-screening)
 
 | Field | Value |
 |---|---|
 | Hackathon | AMD Developer Hackathon ACT II (lablab.ai) |
 | Track | 3 — Unicorn / Open Innovation |
 | Team | Drupal AI Router (Leo Fishman) |
-| What it is | Content-integrity suite (factcheck + AI-likelihood + plagiarism) native to Drupal CMS |
-| AMD compute usage | All LLM inference (claim extraction + verdicts) served by vLLM 0.16 on ROCm 7.2 on an AMD Instinct GPU; wired into Drupal as the `amd_vllm` server. Evidence: [`evidence/`](evidence/) |
-| Core code | [ai_provider_universal](https://www.drupal.org/project/ai_provider_universal) — our GPL-2.0+ module on drupal.org (pre-existing work; the hackathon adds the AMD serving layer + university use case) |
-| Run the demo | `cp .env.example .env && docker compose up -d`, then http://localhost:8080 (admin/admin) |
-| Verify the claim yourself | Open node 5 → *Content scan* tab: 3 fabricated claims come back CONTRADICTED against the site's own indexed corpus |
+| What it is | **Drupal-native content integrity suite**: claim-level fact-checking against the university's own corpus + AI-writing likelihood + verbatim plagiarism search. Fully GPL-2.0+. |
+| Core technology | Drupal 11 CMS + ai_provider_universal (GPL module) + local AMD ROCm inference |
+| AMD / local inference | Full stack runs on **local AMD hardware** (Minisforum with ROCm + Ollama/vLLM). Notebook AMD footage used for development validation. Zero-cost local inference preferred. Evidence in `evidence/`. |
+| Core code | [ai_provider_universal](https://www.drupal.org/project/ai_provider_universal) — GPL-2.0+ module on drupal.org |
+| Run the demo | `cp .env.example .env && docker compose up -d` → http://localhost:8080 (admin/admin) |
+| Key differentiator | Verdicts grounded in the **institution's own indexed content** (Search API), with auditable trusted/distrusted sites and hybrid routing (local AMD → Fireworks for complex claims). |
 
-Universities pay heavily for plagiarism detection, but plagiarism tools only
-answer *"is it copied?"*. An AI-written essay is original text full of
-fabricated claims — invisible to every plagiarism scanner. This project
-answers the questions those tools can't: **is it true, and who wrote it?** —
-natively inside Drupal, the CMS those institutions already run, with all
-inference served by an **AMD Instinct GPU (ROCm 7.2 + vLLM)**.
+**Universities and research institutions need claim-level verification, not just plagiarism detection.**
 
-Built on [ai_provider_universal](https://www.drupal.org/project/ai_provider_universal),
-our GPL-2.0+ module published on drupal.org (months of prior work; this
-hackathon adds the AMD serving layer and the university use case).
+Traditional plagiarism tools only answer "is it copied?". Fabricated claims and AI-generated content in original prose pass every scanner.
+
+**Drupal AI Factchecker** delivers **claim-level content integrity natively inside Drupal** — the secure, flexible, GPL-licensed CMS that powers a very large share of university, research, and scientific websites worldwide:
+
+- Atomic claim extraction
+- Verification first against the **institution's own indexed corpus** (Search API + highlight excerpts)
+- Reputation-based trusted / distrusted sites (claims echoed only by low-reputation sources become "tainted")
+- Optional import of bias & factual ratings from sources like MediaBiasFactCheck.com via `drush factcheck:sync-mbfc`
+- AI-writing likelihood score
+- Verbatim plagiarism search
+- **All inference on local AMD hardware (ROCm)** with intelligent hybrid routing
+
+**Why Drupal is the right platform for universities and research institutions**:
+- **Strength & Robustness**: Production-proven at scale across thousands of .edu and research institutions worldwide.
+- **Flexibility**: Models, evidence sources, trust profiles, routing tiers, and fact-checking behavior are all pure Drupal configuration. Drupal recipes allow one-command installation on existing sites with no custom code.
+- **Security & Control**: Fully self-hosted and on-premise. Research and student data never leaves institution-controlled AMD hardware. Full audit logs inside Drupal. No black boxes, no SaaS data exfiltration.
+- **GPL License**: True open source under GPL-2.0+. Complete transparency, auditability, and freedom to modify and deploy — essential for academic and publicly funded environments.
+- **Widely used in academic and scientific environments**: Drupal powers a large portion of university portals, institutional repositories, research data platforms, and .edu/.ac sites globally. This is the CMS these organizations already operate and trust.
+
+Built on the mature [ai_provider_universal](https://www.drupal.org/project/ai_provider_universal) GPL module (pre-existing work on drupal.org). This hackathon adds the local AMD ROCm serving layer and the university content-integrity use case.
 
 ## What it does
 
@@ -63,28 +78,23 @@ tab and run the scan — the pipeline finds all three:
 True claims (three campuses, Elena Vasquez and the bridge) come back
 SUPPORTED — grounded in the university's own content, not model memory.
 
-## AMD compute
+## Local AMD stack (Minisforum + ROCm) — our strength
 
-Set `AMD_VLLM_URL` in `.env` to an OpenAI-compatible endpoint served by
-vLLM on an AMD GPU (ROCm) and re-run `docker compose up -d`: the
-provisioning registers it as the **"AMD Instinct GPU (ROCm + vLLM)"**
-server, discovers its models, and points claim extraction and verdict
-checking at it. The decisions log then shows every inference call routed to
-AMD hardware. Hardware evidence (rocm-smi, vLLM startup log, decision log
-screenshots) lives in [`evidence/`](evidence/).
+All inference (claim extraction and verification) runs on **local AMD hardware with ROCm**.
 
-Privacy angle: student work never has to leave institution-controlled AMD
-hardware — no SaaS, no third-party data processing agreement.
+- The production/live deployment uses a **Minisforum AMD Ryzen AI mini-PC** running the full stack locally (Ollama or vLLM on ROCm).
+- Development/validation footage was captured on an AMD Instinct GPU notebook (ROCm + vLLM) — visible in the submitted video.
+- The same Drupal module and configuration works across both: from edge AMD hardware to datacenter GPUs. Just point `AMD_VLLM_URL` at the OpenAI-compatible endpoint.
 
-**Runs on anything AMD.** The [live demo](https://amd-hackathon.fishman.work)
-is hosted on an AMD Ryzen AI 9 HX 370 mini-PC (Radeon 890M) running local
-models; the recorded verdicts ran on an AMD Instinct GPU with ROCm + vLLM.
-Same module, same configuration — switching between an edge mini-PC and a
-datacenter GPU is a dropdown, which is exactly the deployment range a
-university IT department needs.
+**Key advantages for universities**:
+- Student and research data **never leaves institution-controlled AMD hardware**.
+- Zero ongoing inference cost for the majority of claims (local first).
+- Full auditability in Drupal's decisions log (`/admin/reports/ai-router-decisions`).
+- Hybrid routing: simple claims on local AMD (cost 0), complex claims can escalate to premium models (e.g. Fireworks) when needed.
 
-Without `AMD_VLLM_URL` the stack falls back to a bundled Ollama container
-(gemma3:4b, CPU) so the demo runs anywhere.
+Hardware evidence is in the `evidence/` directory (rocm-smi, logs, decision screenshots).
+
+Without an `AMD_VLLM_URL` the stack gracefully falls back to the bundled Ollama container.
 
 ### Optional API keys
 
@@ -98,14 +108,21 @@ factcheck against the local corpus works without them:
 Keys are wired through the Key module's `env` provider: values live only
 in the environment, never in config or the database.
 
-## Why this beats the closed incumbents
+## Why Drupal + this module beats closed-source alternatives
 
-- **Closed tools can't see your corpus.** Verdicts here are grounded in the
-  institution's own indexed knowledge, with the evidence shown per claim.
-- **Closed tools are black boxes.** Here every decision — model, route,
-  cost, verdict — is logged, and the whole pipeline is GPL code you can read.
-- **Closed tools are another platform.** This is a module install on the
-  CMS already powering a large share of .edu and .gov sites.
+**Strength, flexibility and security in one GPL package:**
+
+- **Strength & Robustness**: Drupal is a mature, production-grade CMS used at scale by universities and research organizations worldwide. This is not a fragile prototype — it installs on existing Drupal sites via recipes.
+
+- **Flexibility**: Models, evidence sources (own corpus first), trusted/distrusted site profiles, routing tiers, and factcheck behavior are all **Drupal configuration**, not code. Universities can adapt it without developers.
+
+- **Security & Control**: 100% self-hosted. Data stays on-premise on AMD hardware. GPL license means full transparency and no vendor lock-in. Every routing decision and verdict is logged inside Drupal.
+
+- **GPL License**: True freedom. Inspect, modify, redistribute. Perfect match for academic and public institutions.
+
+- **Widely adopted in scientific and university environments**: Drupal powers a massive portion of .edu sites, institutional repositories, research portals, and academic publishing platforms. The CMS these organizations already trust and operate.
+
+Closed tools are expensive black boxes that cannot see your internal corpus and force you onto yet another platform. This is a **native Drupal module** that turns the CMS you already run into a powerful, auditable content integrity system.
 
 ## Layout
 

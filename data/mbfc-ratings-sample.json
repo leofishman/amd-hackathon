@@ -1,0 +1,74 @@
+[
+  {
+    "domain": "foxnews.com",
+    "name": "Fox News",
+    "bias": "Right",
+    "factual": "Mixed",
+    "credibility": "Medium",
+    "notes": "Right bias. Mixed factual reporting. Often frames stories with conservative perspective."
+  },
+  {
+    "domain": "rt.com",
+    "name": "RT (Russia Today)",
+    "bias": "Left",
+    "factual": "Mixed",
+    "credibility": "Low",
+    "notes": "Strong pro-Russian government bias. Frequently presents alternative narratives on geopolitics."
+  },
+  {
+    "domain": "reuters.com",
+    "name": "Reuters",
+    "bias": "Center",
+    "factual": "High",
+    "credibility": "High",
+    "notes": "Least biased. Very high factual reporting. Strong reputation for straight news."
+  },
+  {
+    "domain": "apnews.com",
+    "name": "Associated Press",
+    "bias": "Center",
+    "factual": "High",
+    "credibility": "High",
+    "notes": "Least biased. Very high factual reporting. Public corrections policy."
+  },
+  {
+    "domain": "nytimes.com",
+    "name": "The New York Times",
+    "bias": "Left-Center",
+    "factual": "High",
+    "credibility": "High",
+    "notes": "Left-Center bias. High factual reporting. Strong on investigative work."
+  },
+  {
+    "domain": "bbc.com",
+    "name": "BBC",
+    "bias": "Left-Center",
+    "factual": "High",
+    "credibility": "High",
+    "notes": "Left-Center bias on some international topics. Generally high factual reporting."
+  },
+  {
+    "domain": "theguardian.com",
+    "name": "The Guardian",
+    "bias": "Left",
+    "factual": "High",
+    "credibility": "High",
+    "notes": "Left bias. High factual reporting. Strong progressive editorial line."
+  },
+  {
+    "domain": "breitbart.com",
+    "name": "Breitbart News",
+    "bias": "Right",
+    "factual": "Mixed",
+    "credibility": "Low",
+    "notes": "Extreme Right bias. Mixed to low factual reporting on political topics."
+  },
+  {
+    "domain": "washingtonpost.com",
+    "name": "The Washington Post",
+    "bias": "Left-Center",
+    "factual": "High",
+    "credibility": "High",
+    "notes": "Left-Center bias. High factual reporting. Strong on U.S. politics."
+  }
+]

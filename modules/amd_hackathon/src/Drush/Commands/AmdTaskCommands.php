@@ -43,4 +43,22 @@ class AmdTaskCommands extends DrushCommands {
     }
   }
 
+  /**
+   * Imports or updates Trusted Sites using Media Bias/Fact Check style ratings.
+   *
+   * This is a convenience wrapper. The actual logic lives in:
+   *   scripts/sync-trusted-sites-from-mbfc.php
+   *
+   * Recommended usage:
+   *   drush scr scripts/sync-trusted-sites-from-mbfc.php
+   *
+   * You can extend data/mbfc-ratings-sample.json with more sites
+   * from https://mediabiasfactcheck.com/
+   */
+  #[CLI\Command(name: 'factcheck:sync-mbfc')]
+  public function syncMbfc(): void {
+    $this->output()->writeln("Use: drush scr scripts/sync-trusted-sites-from-mbfc.php");
+    $this->output()->writeln("Data file: data/mbfc-ratings-sample.json");
+  }
+
 }

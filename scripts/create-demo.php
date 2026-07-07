@@ -123,33 +123,29 @@ if (!$exists($essay_title)) {
   echo "Essay: $essay_title\n";
 }
 
-// --- Landing page for judges.
+// --- Landing page for judges (basic version — run create-enhanced-demo.php for full cascade + trusted sites explanation).
 $landing_title = 'Drupal AI Factchecker — demo guide';
 if (!$exists($landing_title)) {
   Node::create([
     'type' => 'page',
     'title' => $landing_title,
     'body' => [
-      'value' => '<p>This site demonstrates claim-level content verification
-      native to Drupal, with inference served by an AMD Instinct GPU
-      (ROCm + vLLM).</p>
-      <ol>
-      <li>Open the <em>Student essay</em> node and its <strong>Content
-      scan</strong> tab.</li>
-      <li>Run the scan: claims are extracted, checked against the
-      university\'s own indexed corpus (the four <em>article</em> nodes),
-      and given per-claim verdicts. The essay contains three fabricated
-      claims — the scan finds them.</li>
-      <li>Every model call is audited at
-      <em>/admin/reports/ai-router-decisions</em>: note the
-      <strong>AMD Instinct GPU (ROCm + vLLM)</strong> server.</li>
-      </ol>
-      <p>Log in with the credentials provided in the submission (or
-      admin/admin on a local docker compose boot).</p>',
+      'value' => '<p><strong>Full AMD stack on local hardware (Minisforum + ROCm)</strong> — inference runs on your own AMD GPU with no external dependency for the majority of claims.</p>
+
+<p>This site demonstrates claim-level content verification native to Drupal.</p>
+<ol>
+<li>Open the <em>Student essay</em> node and its <strong>Content scan</strong> tab.</li>
+<li>Run the scan: claims are extracted and verified against the university\'s own indexed corpus.</li>
+<li>Check <em>/admin/reports/ai-router-decisions</em> to see the routing cascade (local AMD for simple claims, escalation to premium models when needed).</li>
+</ol>
+
+<p>Run <code>drush scr /hackathon-scripts/create-enhanced-demo.php</code> to populate additional essays and the full explanation of the cascade + trusted sites.</p>
+
+<p>Login: judge (see submission) or admin/admin locally.</p>',
       'format' => 'full_html',
     ],
     'status' => 1,
     'promote' => 1,
   ])->save();
-  echo "Landing: $landing_title\n";
+  echo "Landing: $landing_title (basic — enhance with create-enhanced-demo.php)\n";
 }

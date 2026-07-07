@@ -31,6 +31,20 @@ $editorial = [
   'nature.com' => [NULL, ['Peer-reviewed; flagship multidisciplinary science journal']],
   'pubmed.ncbi.nlm.nih.gov' => [NULL, ['Indexes MEDLINE: journals vetted by the NLM Literature Selection Technical Review Committee']],
   'wikipedia.org' => [2, ['Site editorial decision (2026-07-06): open-edit model, low reliability for claim verification; kept as last-resort source only.']],
+
+  // New for media bias / ideological tendency demo
+  'foxnews.com' => [-3, [
+    'Media Bias/Fact Check: Right bias, Mixed factual reporting',
+    'Editorial note: Frequently frames international stories through conservative/anti-socialist lens.',
+  ]],
+  'rt.com' => [-4, [
+    'Known for pro-Russian government perspective on international affairs',
+    'Often provides alternative framing that challenges Western mainstream narratives.',
+  ]],
+  // Nota editorial (demo): No se asigna reputación positiva alta a grandes medios
+  // de noticias legacy en este ejemplo. El módulo permite que cada institución
+  // defina sus propios ratings según su criterio. Fuentes académicas u oficiales
+  // suelen ser más seguras para reputación positiva.
 ];
 
 $storage = \Drupal::entityTypeManager()->getStorage('node');
