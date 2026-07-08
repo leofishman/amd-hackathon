@@ -78,6 +78,16 @@ tab and run the scan — the pipeline finds all three:
 True claims (three campuses, Elena Vasquez and the bridge) come back
 SUPPORTED — grounded in the university's own content, not model memory.
 
+> **Note on CPU fallback speed**: without `AMD_VLLM_URL` set, the scan runs
+> on the bundled Ollama container **on CPU**, which is meaningfully slower
+> than the AMD GPU path and can occasionally exceed the 120s HTTP timeout on
+> a busy or lower-end machine — the batch UI then shows no verdicts for that
+> run. If that happens, just click *Run scan* again (the model is warm after
+> the first call), or point `AMD_VLLM_URL` at any ROCm/vLLM or Ollama-on-GPU
+> endpoint for the fast path. This is a CPU-inference-speed limitation, not
+> a pipeline bug — see the **live demo** link above for the full pipeline
+> running on real AMD GPU hardware.
+
 ## Local AMD stack (Minisforum + ROCm) — our strength
 
 All inference (claim extraction and verification) runs on **local AMD hardware with ROCm**.
@@ -108,20 +118,6 @@ factcheck against the local corpus works without them:
 Keys are wired through the Key module's `env` provider: values live only
 in the environment, never in config or the database.
 
-## Why Drupal + this module beats closed-source alternatives
-
-**Strength, flexibility and security in one GPL package:**
-
-- **Strength & Robustness**: Drupal is a mature, production-grade CMS used at scale by universities and research organizations worldwide. This is not a fragile prototype — it installs on existing Drupal sites via recipes.
-
-- **Flexibility**: Models, evidence sources (own corpus first), trusted/distrusted site profiles, routing tiers, and factcheck behavior are all **Drupal configuration**, not code. Universities can adapt it without developers.
-
-- **Security & Control**: 100% self-hosted. Data stays on-premise on AMD hardware. GPL license means full transparency and no vendor lock-in. Every routing decision and verdict is logged inside Drupal.
-
-- **GPL License**: True freedom. Inspect, modify, redistribute. Perfect match for academic and public institutions.
-
-- **Widely adopted in scientific and university environments**: Drupal powers a massive portion of .edu sites, institutional repositories, research portals, and academic publishing platforms. The CMS these organizations already trust and operate.
-
 Closed tools are expensive black boxes that cannot see your internal corpus and force you onto yet another platform. This is a **native Drupal module** that turns the CMS you already run into a powerful, auditable content integrity system.
 
 ## Layout
@@ -131,7 +127,6 @@ docker-compose.yml         web (Drupal 11) + db (MariaDB) + ollama (fallback)
 Dockerfile                 all PHP deps baked at build; module from drupal.org
 docker-entrypoint.sh       idempotent install + provisioning on first boot
 scripts/                   servers, factcheck, evidence index, demo content
-track3/                    submission assets: runbook, video script, deck prompt
 evidence/                  AMD hardware evidence (rocm-smi, vLLM logs, screenshots)
 ```
 
