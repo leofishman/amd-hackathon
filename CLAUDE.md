@@ -23,7 +23,51 @@ en cada hito de cada sesión. Leerlo primero al retomar trabajo.
   video); keys Tavily/Serper por UI en el live demo; subir video; submit
   en lablab con: repo + PDF + video + URL live demo + credenciales judge.
 
-## Notas para la sesión del 07-07
+## Estado sesión 07-07 (tarde) — demo listo para grabar
+
+- **Live demo sano y validado end-to-end** (scan UI completo sin 524, por
+  la URL pública). Modelos: extractor/detector `gemma4:e2b`, checker
+  `gemma4:e4b` (tier 5), TODO local en ROCm (ollama:rocm del compose).
+  gemma4 12b también bajado y registrado (tier 4). El factcheck usa
+  modelos FIJOS a propósito (no route): la extracción vía route se iba a
+  Fireworks y moría por el proxy.
+- **Fix 524 (Cloudflare corta a ~100s)**: `batchVerifyClaims` ahora
+  multi-pass, tandas de 3 claims por request. Commit `46c9388` en el
+  módulo + fix del sort de la view decisions (DESC de verdad). PUSHEADO a
+  drupal.org e imagen rebuildeada en minisforum. OJO: una tanda llegó a
+  120s (raspando) — decisión pendiente: chunk 3→2.
+- **MBFC completo importado**: ~7.850 trusted sites con reputación
+  computada + `field_bias` normalizado (left/lean_left/center/...). Fix a
+  los 2 scripts de Grok: labels "Very High"/"Least Biased" no matcheaban
+  (Reuters quedaba distrusted) y no seteaban `field_bias` (coverage/
+  blindspot salía vacío). 896 nodos basura borrados. nytimes.com tiene
+  "Site editorial assessment" con refs de Leo. SIN COMMITEAR en el repo.
+- **Fireworks**: server + key entity (env). kimi-k2p6 (tier 5) y
+  gpt-oss-120b (tier 4) con costos. Ruta hybrid_chat: gemma3:4b + e2b +
+  e4b locales + kimi premium (amd_vllm sacados: túnel muerto).
+- **BUG ZOMBIE (post-video investigar)**: un worker apache (PID 34) quedó
+  loopeando tras un 524: manda conversación creciente (67k tokens) por
+  hybrid_chat → kimi, ~$0.04/min. Se mata con kill del worker (o el
+  apagado del server de hoy). Causa raíz probable en el flujo
+  route+verifier tras aborts del cliente — falta guard connection_aborted
+  o límite de iteraciones. Gastó ~$1-2 de crédito.
+- **Assets video listos**: guion actualizado (track3/VIDEO_SCRIPT.md),
+  deck prompt actualizado (GEMINI_DECK_PROMPT.md), landing node/6
+  reescrita, evidencia fresca en evidence/ (minisforum-rocm-smi.txt con
+  GPU 100% + ollama-rocm.log). BORRAR `evidence/cloudflared` (37MB) antes
+  del push. Escena tmux: amdgpu_top + lscpu durante scan.
+- **Pendientes**: commit+push repo demo (scripts, guion, deck, evidencia,
+  Dockerfile con max_execution_time=300, create-demo.php nueva landing);
+  mail a MBFC redactado en el chat (editor@mediabiasfactcheck.com), Leo
+  lo manda con el video; ~/amd-hackathon-demo en minisforum se sincroniza
+  con rsync — EXCLUIR `.env` (hoy lo pisé y volteé el sitio: WEB_PORT y
+  keys; Leo ya lo restauró).
+- Ollama del compose en minisforum quedó como servicio `ollama` (Grok lo
+  había sacado a un contenedor suelto + hosts hack — revertido). Modelos
+  en volumen amd-hackathon-demo_ollama_data. Al recrear web: /data
+  (JSONs MBFC) se pierde, re-copiar con docker cp si se re-corre el sync.
+
+## Notas para la sesión del 07-07 (mañana, parcialmente obsoletas)
 
 - **Video v2 (Leo quiere regrabar con consejos de Grok)**: reusar la
   escena de la notebook Instinct del material YA grabado

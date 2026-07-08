@@ -3,23 +3,28 @@
  * @file
  * Syncs Trusted Site nodes using Media Bias / Fact Check style ratings.
  *
- * This allows populating the reputation system with external bias/factual data
- * (from MediaBiasFactCheck.com or similar sources).
+ * Supports two formats in data/mbfc-ratings-sample.json (or override $json_path):
+ * 1. Simplified: [{domain, name, bias, factual, credibility, notes}, ...]  (~9 in sample)
+ * 2. Full MBFC export (result of call): 10k+ entries with keys like "Source", "Source URL", "Factual Reporting", "Political Bias", "Credibility" etc.
  *
  * Usage:
  *   drush scr /hackathon-scripts/sync-trusted-sites-from-mbfc.php
- *
- * You can edit data/mbfc-ratings-sample.json to add more sites.
  *
  * The script will:
  * - Create or update trusted_site nodes
  * - Set field_reputation based on factual + bias
  * - Append MBFC-style assessments
+ *
+ * Note: The data/mbfc-ratings-sample.json in the demo is the full MBFC call result (~15k entries).
+ * Filter or pass path if you only want some for the demo.
  */
 
 use Drupal\node\Entity\Node;
 
-$json_path = __DIR__ . '/../data/mbfc-ratings-sample.json';
+$json_path = $argv[1] ?? getenv('MBFC_JSON') ?? __DIR__ . '/../data/mbfc-ratings-existing.json';
+if (!file_exists($json_path)) {
+  $json_path = __DIR__ . '/../data/mbfc-ratings-sample.json';
+}
 
 if (!file_exists($json_path)) {
   echo "ERROR: $json_path not found.\n";
@@ -31,6 +36,29 @@ $data = json_decode(file_get_contents($json_path), TRUE);
 if (!is_array($data)) {
   echo "ERROR: Invalid JSON in $json_path\n";
   exit(1);
+}
+
+// Support full MBFC dump (15k+ entries, keys like "Source", "Source URL", "Factual Reporting")
+if (!empty($data) && isset($data[0]['Source']) && (isset($data[0]['Source URL']) || isset($data[0]['Factual Reporting']))) {
+  echo "Detected full MBFC format (" . count($data) . " entries). Normalizing...\n";
+  $normalized = [];
+  foreach ($data as $raw) {
+    $url = trim($raw['Source URL'] ?? '');
+    if (!$url) continue;
+    $domain = parse_url($url, PHP_URL_HOST) ?: $url;
+    $domain = preg_replace('/^www\./', '', $domain);
+    if (!$domain) continue;
+    $normalized[] = [
+      'domain' => strtolower($domain),
+      'name' => $raw['Source'] ?? $domain,
+      'bias' => $raw['Political Bias'] ?? $raw['Bias'] ?? 'Center',
+      'factual' => $raw['Factual Reporting'] ?? 'Mixed',
+      'credibility' => $raw['Credibility'] ?? 'Unknown',
+      'notes' => trim(($raw['Bias'] ?? '') . ' ' . ($raw['Country'] ?? '') . ' ' . ($raw['Media Type'] ?? '')),
+    ];
+  }
+  $data = $normalized;
+  echo "Normalized to " . count($data) . " entries.\n";
 }
 
 $storage = \Drupal::entityTypeManager()->getStorage('node');
@@ -60,9 +88,12 @@ foreach ($data as $site) {
     'field_domain' => $domain,
   ]);
 
+  $bias_value = mbfc_bias_to_field($site['bias'] ?? '');
+
   if ($existing) {
     $node = reset($existing);
     $node->set('field_reputation', $reputation);
+    $node->set('field_bias', $bias_value);
 
     // Append if not already present
     $current = $node->get('field_assessments')->getValue();
@@ -88,6 +119,7 @@ foreach ($data as $site) {
       'title' => $name,
       'field_domain' => $domain,
       'field_reputation' => $reputation,
+      'field_bias' => $bias_value,
       'field_assessments' => [
         ['value' => $assessment],
       ],
@@ -107,6 +139,7 @@ echo "You can now view them at /admin/content?type=trusted_site\n";
  */
 function calculate_reputation_from_mbfc(string $factual, string $bias): int {
   $base = match (strtolower(trim($factual))) {
+    'very high' => 8,
     'high' => 7,
     'mostly factual', 'mostly high' => 4,
     'mixed' => 0,
@@ -115,7 +148,7 @@ function calculate_reputation_from_mbfc(string $factual, string $bias): int {
   };
 
   $bias_adjustment = match (strtolower(trim($bias))) {
-    'center' => 1,
+    'least biased', 'center' => 1,
     'left-center', 'right-center' => 0,
     'left', 'right' => -1,
     default => -2,
@@ -125,4 +158,20 @@ function calculate_reputation_from_mbfc(string $factual, string $bias): int {
 
   // Clamp to -10 / +10
   return max(-10, min(10, $score));
+}
+
+/**
+ * MBFC bias label to the field_bias tokens coverage() understands
+ * (left | lean_left | center | lean_right | right).
+ */
+function mbfc_bias_to_field(string $bias): string {
+  return match (strtolower(trim($bias))) {
+    'left', 'extreme left' => 'left',
+    'left-center' => 'lean_left',
+    'least biased', 'center', 'pro-science' => 'center',
+    'right-center' => 'lean_right',
+    'right', 'extreme right' => 'right',
+    // MBFC "Questionable" rates credibility, not left/right leaning.
+    default => '',
+  };
 }

@@ -46,19 +46,32 @@ class AmdTaskCommands extends DrushCommands {
   /**
    * Imports or updates Trusted Sites using Media Bias/Fact Check style ratings.
    *
-   * This is a convenience wrapper. The actual logic lives in:
-   *   scripts/sync-trusted-sites-from-mbfc.php
+   * Reads from data/mbfc-ratings-sample.json (the result of MBFC-style data calls)
+   * and creates/updates trusted_site nodes with reputation + assessments.
    *
-   * Recommended usage:
+   * Usage:
+   *   drush factcheck:sync-mbfc
+   *
+   * Or directly:
    *   drush scr scripts/sync-trusted-sites-from-mbfc.php
    *
-   * You can extend data/mbfc-ratings-sample.json with more sites
-   * from https://mediabiasfactcheck.com/
+   * Edit data/mbfc-ratings-sample.json to add/review more sites from MediaBiasFactCheck.
    */
   #[CLI\Command(name: 'factcheck:sync-mbfc')]
   public function syncMbfc(): void {
-    $this->output()->writeln("Use: drush scr scripts/sync-trusted-sites-from-mbfc.php");
-    $this->output()->writeln("Data file: data/mbfc-ratings-sample.json");
+    $script = DRUPAL_ROOT . '/../hackathon-scripts/sync-trusted-sites-from-mbfc.php';
+    if (!file_exists($script)) {
+      // Fallback if run from different location
+      $script = __DIR__ . '/../../../../../../scripts/sync-trusted-sites-from-mbfc.php';
+    }
+    if (file_exists($script)) {
+      $this->output()->writeln("Running MBFC sync from $script ...");
+      require $script;
+    } else {
+      $this->output()->writeln("MBFC data file: data/mbfc-ratings-sample.json");
+      $this->output()->writeln("Script: scripts/sync-trusted-sites-from-mbfc.php");
+      $this->output()->writeln("Run manually with: drush scr /hackathon-scripts/sync-trusted-sites-from-mbfc.php");
+    }
   }
 
 }

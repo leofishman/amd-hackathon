@@ -1,0 +1,20 @@
+load_tensors:        ROCm0 model buffer size =  2367.54 MiB
+time=2026-07-07T12:36:53.167Z level=INFO source=sched.go:1343 msg="updated VRAM based on existing loaded models" gpu=0 library=ROCm total="48.0 GiB" available="38.2 GiB"
+time=2026-07-07T12:36:53.228Z level=INFO source=sched.go:630 msg="gpu memory" id=0 library=ROCm available="37.8 GiB" free="38.2 GiB" minimum="457.0 MiB" overhead="0 B"
+load_tensors: offloaded 36/36 layers to GPU
+load_tensors:        ROCm0 model buffer size =  1397.54 MiB
+time=2026-07-07T12:39:17.630Z level=INFO source=sched.go:1343 msg="updated VRAM based on existing loaded models" gpu=0 library=ROCm total="48.0 GiB" available="38.2 GiB"
+time=2026-07-07T12:39:17.690Z level=INFO source=sched.go:630 msg="gpu memory" id=0 library=ROCm available="37.8 GiB" free="38.2 GiB" minimum="457.0 MiB" overhead="0 B"
+load_tensors: offloaded 43/43 layers to GPU
+load_tensors:        ROCm0 model buffer size =  2829.67 MiB
+time=2026-07-07T12:50:04.570Z level=INFO source=sched.go:630 msg="gpu memory" id=0 library=ROCm available="40.3 GiB" free="40.7 GiB" minimum="457.0 MiB" overhead="0 B"
+load_tensors: offloaded 43/43 layers to GPU
+load_tensors:        ROCm0 model buffer size =  2829.67 MiB
+time=2026-07-07T12:51:49.439Z level=INFO source=sched.go:1343 msg="updated VRAM based on existing loaded models" gpu=0 library=ROCm total="48.0 GiB" available="37.6 GiB"
+time=2026-07-07T12:51:49.499Z level=INFO source=sched.go:630 msg="gpu memory" id=0 library=ROCm available="37.1 GiB" free="37.6 GiB" minimum="457.0 MiB" overhead="0 B"
+load_tensors: offloaded 35/35 layers to GPU
+load_tensors:        ROCm0 model buffer size =  2367.54 MiB
+time=2026-07-07T12:51:58.708Z level=INFO source=sched.go:1343 msg="updated VRAM based on existing loaded models" gpu=0 library=ROCm total="48.0 GiB" available="37.6 GiB"
+time=2026-07-07T12:51:58.772Z level=INFO source=sched.go:630 msg="gpu memory" id=0 library=ROCm available="37.1 GiB" free="37.6 GiB" minimum="457.0 MiB" overhead="0 B"
+load_tensors: offloaded 36/36 layers to GPU
+load_tensors:        ROCm0 model buffer size =  1397.54 MiB

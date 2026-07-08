@@ -25,26 +25,79 @@ $exists = static function (string $title): bool {
 };
 
 // --- Use MBFC-style data for trusted sites (recommended approach)
-// This demonstrates importing external bias ratings (e.g. from MediaBiasFactCheck.com)
-// Run `drush factcheck:sync-mbfc` for a full import from data/mbfc-ratings-sample.json
+// This demonstrates importing external bias ratings from data/mbfc-ratings-sample.json
+// (result of MBFC-style calls). Run the sync for full population:
+//   drush scr /hackathon-scripts/sync-trusted-sites-from-mbfc.php
 //
-// For the media bias demo we ensure the key contrasting sites exist.
-$media_sites = [
-  'foxnews.com' => [
-    'reputation' => -3,
-    'assessments' => [
-      'Imported from Media Bias/Fact Check style data',
-      'Right bias, Mixed factual reporting',
-    ],
-  ],
-  'rt.com' => [
-    'reputation' => -4,
-    'assessments' => [
-      'Imported from Media Bias/Fact Check style data',
-      'Pro-Russian government perspective, often alternative narratives',
-    ],
-  ],
-];
+// For the media bias demo we ensure key contrasting sites from the JSON are present
+// with reputations derived from the data.
+function _mbfc_reputation(string $factual, string $bias): int {
+  $base = match (strtolower(trim($factual))) {
+    'high' => 7,
+    'mostly factual', 'mostly high' => 4,
+    'mixed' => 0,
+    'low', 'very low' => -5,
+    default => 0,
+  };
+  $adj = match (strtolower(trim($bias))) {
+    'center' => 1,
+    'left-center', 'right-center' => 0,
+    'left', 'right' => -1,
+    default => -2,
+  };
+  return max(-10, min(10, $base + $adj));
+}
+
+$mbfc_path = __DIR__ . '/../data/mbfc-ratings-existing.json';
+if (!file_exists($mbfc_path)) {
+  $mbfc_path = __DIR__ . '/../data/mbfc-ratings-sample.json';
+}
+$media_sites = [];
+if (file_exists($mbfc_path)) {
+  $mbfc = json_decode(file_get_contents($mbfc_path), true) ?: [];
+  // Normalize full MBFC format if needed (like in sync script)
+  if (!empty($mbfc) && isset($mbfc[0]['Source']) && (isset($mbfc[0]['Source URL']) || isset($mbfc[0]['Factual Reporting']))) {
+    $norm = [];
+    foreach ($mbfc as $raw) {
+      $url = trim($raw['Source URL'] ?? '');
+      $domain = parse_url($url, PHP_URL_HOST) ?: $url;
+      $domain = preg_replace('/^www\./', '', $domain);
+      if ($domain) {
+        $norm[] = [
+          'domain' => strtolower($domain),
+          'name' => $raw['Source'] ?? $domain,
+          'bias' => $raw['Political Bias'] ?? $raw['Bias'] ?? 'Center',
+          'factual' => $raw['Factual Reporting'] ?? 'Mixed',
+          'credibility' => $raw['Credibility'] ?? 'Unknown',
+          'notes' => trim(($raw['Bias'] ?? '') . ' ' . ($raw['Country'] ?? '') . ' ' . ($raw['Media Type'] ?? '')),
+        ];
+      }
+    }
+    $mbfc = $norm;
+  }
+  foreach (['foxnews.com', 'rt.com'] as $dom) {
+    foreach ($mbfc as $s) {
+      if (($s['domain'] ?? '') === $dom) {
+        $media_sites[$dom] = [
+          'reputation' => _mbfc_reputation($s['factual'] ?? 'Mixed', $s['bias'] ?? 'Center'),
+          'assessments' => [
+            'Imported from Media Bias/Fact Check style data',
+            sprintf('Bias: %s | Factual: %s | Credibility: %s', $s['bias'] ?? '', $s['factual'] ?? '', $s['credibility'] ?? ''),
+            $s['notes'] ?? '',
+          ],
+        ];
+        break;
+      }
+    }
+  }
+}
+if (empty($media_sites)) {
+  // Accurate data from the 15k+ MBFC call result
+  $media_sites = [
+    'foxnews.com' => ['reputation' => -5, 'assessments' => ['MBFC (full call): Questionable bias, Low factual, Low credibility']],
+    'rt.com' => ['reputation' => -6, 'assessments' => ['MBFC (full call): Questionable bias, Very Low factual, Low credibility']],
+  ];
+}
 
 $storage = \Drupal::entityTypeManager()->getStorage('node');
 foreach ($storage->loadByProperties(['type' => 'trusted_site']) as $node) {
@@ -137,7 +190,7 @@ if ($landing_nodes) {
 <p>Open the page <strong>"Analysis: What the Venezuela earthquake reveals about urban infrastructure"</strong> and run Content scan.</p>
 <ul>
   <li>The corpus contains articles simulating coverage from different outlets (Fox News style, RT style, Reuters-style technical, official reports).</li>
-  <li>Trusted sites can be populated from external bias rating sources (e.g. MediaBiasFactCheck.com) using <code>drush factcheck:sync-mbfc</code>.</li>
+  <li>Trusted sites can be populated from external bias rating sources (e.g. MediaBiasFactCheck.com) using the JSON in <code>data/mbfc-ratings-sample.json</code> + <code>drush scr /hackathon-scripts/sync-trusted-sites-from-mbfc.php</code> (or via provision).</li>
   <li>Observe how the system weighs evidence from high-reputation vs low-reputation sources.</li>
   <li>Check the decisions log and the per-claim evidence to see the effect of trusted/distrusted domains.</li>
 </ul>

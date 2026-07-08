@@ -11,3 +11,8 @@
 # Junk
 __pycache__/
 .DS_Store
+.obsidian/
+
+/track3/
+track3/
+CLAUDE.md

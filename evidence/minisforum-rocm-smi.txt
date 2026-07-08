@@ -1,0 +1,19 @@
+# MiniSforum AMD Ryzen AI 9 HX 370 / Radeon 890M iGPU — captured 2026-07-07T13:01Z during a live Content scan (factcheck) on the public demo
+
+Model name:                              AMD Ryzen AI 9 HX 370 w/ Radeon 890M
+
+
+
+========================================= ROCm System Management Interface =========================================
+=================================================== Concise Info ===================================================
+Device  Node  IDs              Temp    Power     Partitions          SCLK  MCLK     Fan  Perf  PwrCap  VRAM%  GPU%  
+[3m              (DID,     GUID)  (Edge)  (Socket)  (Mem, Compute, ID)                                                 [0m
+====================================================================================================================
+0       1     0x150e,   47317  64.0°C  56.04W    N/A, N/A, 0         N/A   2800Mhz  0%   auto  N/A     18%    100%  
+====================================================================================================================
+=============================================== End of ROCm SMI Log ================================================
+
+NAME          ID              SIZE      PROCESSOR    CONTEXT    UNTIL                   
+gemma4:e2b    7fbdbf8f5e45    1.7 GB    100% GPU     8192       4 minutes from now         
+gemma4:e4b    c6eb396dbd59    3.2 GB    100% GPU     8192       4 minutes from now         
+gemma3:4b     a2af6cc3eb7f    2.7 GB    100% GPU     8192       About a minute from now    

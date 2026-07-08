@@ -130,18 +130,13 @@ if (!$exists($landing_title)) {
     'type' => 'page',
     'title' => $landing_title,
     'body' => [
-      'value' => '<p><strong>Full AMD stack on local hardware (Minisforum + ROCm)</strong> — inference runs on your own AMD GPU with no external dependency for the majority of claims.</p>
-
-<p>This site demonstrates claim-level content verification native to Drupal.</p>
+      'value' => '<p>This site demonstrates a <strong>content-integrity suite native to Drupal</strong> — claim-level fact-checking, AI-writing likelihood and verbatim plagiarism search — with <strong>all inference running locally on AMD hardware</strong>: Google Gemma 4 served by Ollama on ROCm (a 2B model extracts claims, a 4B model judges verdicts).</p>
 <ol>
-<li>Open the <em>Student essay</em> node and its <strong>Content scan</strong> tab.</li>
-<li>Run the scan: claims are extracted and verified against the university\'s own indexed corpus.</li>
-<li>Check <em>/admin/reports/ai-router-decisions</em> to see the routing cascade (local AMD for simple claims, escalation to premium models when needed).</li>
+<li>Open the <em>Student essay</em> node and its <strong>Content scan</strong> tab. Run the scan: claims are extracted and checked against the university\'s own indexed corpus (the four <em>article</em> nodes). The essay contains three fabricated claims — the scan finds them, with per-claim verdicts and analysis.</li>
+<li>Browse <strong>Trusted sites</strong> (Content, filtered by type): sources carry a computed reputation and political-bias rating (importable from the full Media Bias/Fact Check dataset via <code>drush scr /hackathon-scripts/sync-trusted-sites-from-mbfc.php</code>), plus dated editorial assessments the institution controls. Negative-reputation domains count <em>against</em> claims that only they echo.</li>
+<li>Every model call is audited at <em>/admin/reports/ai-router-decisions</em> (latest first): local AMD models run at cost 0; complex chat requests can escalate to a premium cloud tier, each decision logged with its estimated cost.</li>
 </ol>
-
-<p>Run <code>drush scr /hackathon-scripts/create-enhanced-demo.php</code> to populate additional essays and the full explanation of the cascade + trusted sites.</p>
-
-<p>Login: judge (see submission) or admin/admin locally.</p>',
+<p>Login: judge (see submission) or admin/admin locally — the whole stack, models included, provisions itself on first <code>docker compose up</code>.</p>',
       'format' => 'full_html',
     ],
     'status' => 1,
