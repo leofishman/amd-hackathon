@@ -94,16 +94,14 @@ if ($exists($landing_title)) {
   $node = \Drupal::entityTypeManager()->getStorage('node')->load(
     array_keys(\Drupal::entityQuery('node')->condition('title', $landing_title)->accessCheck(FALSE)->execute())[0]
   );
-  $body = '<h2>Full Feature Demo Content</h2>
-<p>This site demonstrates multiple aspects of the factchecker:</p>
-<ul>
-  <li><strong>Local corpus verification</strong>: Claims checked against Aldford University articles (use the simple campus claim).</li>
-  <li><strong>Trusted sites & bias</strong>: Run scan on the Venezuela earthquake report. See how Fox/RT style sources vs Reuters affect the verdict.</li>
-  <li><strong>Reputation impact</strong>: Negative reputation sites can mark claims as "tainted".</li>
-  <li><strong>Bias spread</strong>: The discrepancy analysis shows the ideological mix of sources.</li>
-  <li><strong>Hybrid routing</strong>: Check /admin/reports/ai-router-decisions for model choices (local AMD vs Fireworks).</li>
-</ul>
-<p>Run Content scan on different nodes to see the full power.</p>';
+  $body = '<p>This site demonstrates a <strong>content-integrity suite native to Drupal</strong> — claim-level fact-checking, AI-writing likelihood and verbatim plagiarism search — with <strong>all inference running locally on AMD hardware</strong> (Ollama on ROCm; a small model extracts claims, a larger one judges verdicts).</p>
+<ol>
+  <li>Open the <em>Student essay</em> node and its <strong>Content scan</strong> tab. Run the scan: claims are extracted and checked against the university\'s own indexed corpus (the four <em>article</em> nodes). The essay contains three fabricated claims — the scan finds them, with per-claim verdicts and analysis.</li>
+  <li>Browse <strong>Trusted sites</strong> (Content, filtered by type): the demo imports the full Media Bias/Fact Check dataset — 8,700+ sources with computed reputation and political-bias rating. Negative-reputation domains count <em>against</em> claims that only they echo.</li>
+  <li>Every model call is audited at <em>/admin/reports/ai-router-decisions</em> (latest first): local AMD models run at cost 0; complex requests can escalate to a premium cloud tier, each decision logged with its estimated cost.</li>
+  <li>Feel free to add other content to factcheck, edit the testing asset, or edit the trusted sites and see the results.</li>
+</ol>
+<p>Log in with the credentials provided in the submission (or admin/admin on a local <code>docker compose</code> boot — the whole stack, models included, provisions itself on first run).</p>';
 
   $node->set('body', ['value' => $body, 'format' => 'full_html']);
   $node->save();

@@ -57,7 +57,9 @@ services:
       retries: 5
 
   ollama:
-    # ROCm-enabled Ollama for AMD GPUs (Minisforum Ryzen AI, etc.)
+    # ROCm-enabled Ollama for AMD GPUs (Minisforum Ryzen AI, AMD Instinct,
+    # etc). Requires /dev/kfd + /dev/dri on the host — this hackathon is
+    # about AMD GPU inference, so that's a requirement, not an option.
     # On minisforum: first kill external vLLM / llama.cpp processes that are
     # holding memory, then docker compose up -d. This service will use the GPU.
     image: ollama/ollama:rocm
@@ -84,7 +86,6 @@ services:
       - OLLAMA_CONTEXT_LENGTH=8192    # keep modest to reduce CPU from cache mgmt + re-processing on iGPU
       # Do NOT set HSA_OVERRIDE_GFX_VERSION inside the container unless testing —
       # it can force CPU fallback on this APU. Let the rocm image auto-detect.
-
     # Cap CPU cores so the host doesn't get pegged by llama-server threads
     # (GPU still does the heavy lifting, VRAM stays low).
     deploy:

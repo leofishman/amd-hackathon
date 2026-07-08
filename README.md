@@ -25,7 +25,7 @@ Traditional plagiarism tools only answer "is it copied?". Fabricated claims and 
 - Atomic claim extraction
 - Verification first against the **institution's own indexed corpus** (Search API + highlight excerpts)
 - Reputation-based trusted / distrusted sites (claims echoed only by low-reputation sources become "tainted")
-- Optional import of bias & factual ratings from sources like MediaBiasFactCheck.com via `drush factcheck:sync-mbfc`
+- Bias & factual ratings for ~8,700 domains, imported automatically from Media Bias/Fact Check on first boot (`data/mbfc-ratings.json`, pre-cleaned; re-run any time with `drush scr scripts/sync-trusted-sites-from-mbfc.php`)
 - AI-writing likelihood score
 - Verbatim plagiarism search
 - **All inference on local AMD hardware (ROCm)** with intelligent hybrid routing
@@ -57,11 +57,19 @@ Every model call and routing decision is logged and auditable at
 `/admin/reports/ai-router-decisions`. Everything — models, backends,
 evidence sources, trust lists — is Drupal configuration, not code.
 
+## Requirements
+
+**An AMD GPU with ROCm support (`/dev/kfd` + `/dev/dri`) on the host.** This
+is the whole point of the hackathon: the bundled `ollama:rocm` service will
+fail to start without it. Tested on a Ryzen AI mini-PC (Minisforum) and an
+AMD Instinct datacenter GPU — see `evidence/` for hardware logs.
+
 ## Quick start
 
 ```bash
 cp .env.example .env    # optionally set AMD_VLLM_URL / TAVILY_API_KEY / SERPER_API_KEY
-docker compose up -d    # first boot installs + provisions everything (~3-4 min)
+docker compose up -d    # first boot installs + provisions everything, incl. the
+                         # full ~8.7k-domain trusted-sites import (~8-10 min)
 ```
 
 Then open http://localhost:8080 (admin / admin). The front page explains the
@@ -77,16 +85,6 @@ tab and run the scan — the pipeline finds all three:
 
 True claims (three campuses, Elena Vasquez and the bridge) come back
 SUPPORTED — grounded in the university's own content, not model memory.
-
-> **Note on CPU fallback speed**: without `AMD_VLLM_URL` set, the scan runs
-> on the bundled Ollama container **on CPU**, which is meaningfully slower
-> than the AMD GPU path and can occasionally exceed the 120s HTTP timeout on
-> a busy or lower-end machine — the batch UI then shows no verdicts for that
-> run. If that happens, just click *Run scan* again (the model is warm after
-> the first call), or point `AMD_VLLM_URL` at any ROCm/vLLM or Ollama-on-GPU
-> endpoint for the fast path. This is a CPU-inference-speed limitation, not
-> a pipeline bug — see the **live demo** link above for the full pipeline
-> running on real AMD GPU hardware.
 
 ## Local AMD stack (Minisforum + ROCm) — our strength
 

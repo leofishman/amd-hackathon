@@ -3,9 +3,10 @@
  * @file
  * Syncs Trusted Site nodes using Media Bias / Fact Check style ratings.
  *
- * Supports two formats in data/mbfc-ratings-sample.json (or override $json_path):
- * 1. Simplified: [{domain, name, bias, factual, credibility, notes}, ...]  (~9 in sample)
- * 2. Full MBFC export (result of call): 10k+ entries with keys like "Source", "Source URL", "Factual Reporting", "Political Bias", "Credibility" etc.
+ * Supports two formats in data/mbfc-ratings.json (or override $json_path):
+ * 1. Simplified: [{domain, name, bias, factual, credibility, notes}, ...]
+ * 2. Full MBFC export: entries with keys like "Source", "Source URL",
+ *    "Factual Reporting", "Political Bias", "Credibility" etc.
  *
  * Usage:
  *   drush scr /hackathon-scripts/sync-trusted-sites-from-mbfc.php
@@ -15,15 +16,20 @@
  * - Set field_reputation based on factual + bias
  * - Append MBFC-style assessments
  *
- * Note: The data/mbfc-ratings-sample.json in the demo is the full MBFC call result (~15k entries).
- * Filter or pass path if you only want some for the demo.
+ * data/mbfc-ratings.json ships pre-cleaned (dead/offline entries and
+ * duplicate domains already removed — see git history for the filter).
  */
 
 use Drupal\node\Entity\Node;
 
-$json_path = $argv[1] ?? getenv('MBFC_JSON') ?? __DIR__ . '/../data/mbfc-ratings-existing.json';
-if (!file_exists($json_path)) {
-  $json_path = __DIR__ . '/../data/mbfc-ratings-sample.json';
+// getenv() returns FALSE (not NULL) when unset, so ?? alone won't fall
+// through — check explicitly instead of chaining ??.
+$json_path = $argv[1] ?? NULL;
+if (!$json_path) {
+  $json_path = getenv('MBFC_JSON') ?: NULL;
+}
+if (!$json_path) {
+  $json_path = __DIR__ . '/../data/mbfc-ratings.json';
 }
 
 if (!file_exists($json_path)) {

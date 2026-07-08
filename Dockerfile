@@ -28,6 +28,7 @@ RUN { \
 
 COPY modules/amd_hackathon /opt/drupal/web/modules/custom/amd_hackathon
 COPY scripts /hackathon-scripts
+COPY data /data
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh /hackathon-scripts/*.sh
 

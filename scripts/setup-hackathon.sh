@@ -58,6 +58,9 @@ drush scr /hackathon-scripts/provision-factcheck.php
 echo "--- Trusted sites (recipes + seeds)..."
 drush scr /hackathon-scripts/provision-trusted-sites.php || true
 
+echo "--- Trusted sites (full Media Bias/Fact Check import, ~8.7k domains)..."
+drush scr /hackathon-scripts/sync-trusted-sites-from-mbfc.php || echo "WARNING: MBFC import failed"
+
 echo "--- Full demo content (varied examples)..."
 drush scr /hackathon-scripts/create-full-demo-content.php || true
 
