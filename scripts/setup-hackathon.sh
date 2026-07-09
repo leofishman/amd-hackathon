@@ -19,7 +19,7 @@ echo "--- Enabling modules..."
 # and older module releases don't declare the dependency (crash on install).
 drush pm:enable rest serialization --yes
 drush pm:enable key ai eca views field text search_api search_api_db ai_provider_universal \
-  ai_provider_universal_router ai_provider_universal_factcheck amd_hackathon --yes
+  ai_provider_universal_router ai_provider_universal_factcheck ai_observability amd_hackathon --yes
 
 echo "--- Pulling local models: $OLLAMA_MODELS"
 for model in ${OLLAMA_MODELS//,/ }; do
