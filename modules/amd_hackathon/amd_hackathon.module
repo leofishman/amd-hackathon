@@ -1,0 +1,36 @@
+<?php
+
+/**
+ * @file
+ * Demo-only hooks for the AMD hackathon Drupal site.
+ */
+
+/**
+ * Implements hook_mail_alter().
+ *
+ * Relays the factcheck module's own admin-alert emails (scan run, settings
+ * changed) to Telegram: this box has no working outbound mail, but a bot
+ * token is already available. Fires regardless of whether the mail itself
+ * is actually delivered. Demo-only wiring — the published factcheck module
+ * only knows about email.
+ */
+function amd_hackathon_mail_alter(array &$message): void {
+  if ($message['module'] !== 'ai_provider_universal_factcheck') {
+    return;
+  }
+  $token = getenv('TELEGRAM_BOT_TOKEN');
+  $chatId = getenv('TELEGRAM_CHAT_ID');
+  if (!$token || !$chatId) {
+    return;
+  }
+  $text = $message['subject'] . "\n" . implode("\n", $message['body']);
+  try {
+    \Drupal::httpClient()->post("https://api.telegram.org/bot{$token}/sendMessage", [
+      'form_params' => ['chat_id' => $chatId, 'text' => $text],
+      'timeout' => 5,
+    ]);
+  }
+  catch (\Throwable $e) {
+    \Drupal::logger('amd_hackathon')->warning('Telegram relay failed: @message', ['@message' => $e->getMessage()]);
+  }
+}

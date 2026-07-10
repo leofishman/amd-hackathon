@@ -20,6 +20,10 @@ services:
       # search (Serper.dev) for the Content scan.
       TAVILY_API_KEY: ${TAVILY_API_KEY:-}
       SERPER_API_KEY: ${SERPER_API_KEY:-}
+      # Optional: relay factcheck admin-alert emails to Telegram (this box
+      # has no working outbound mail). See amd_hackathon.module.
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+      TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID:-}
       # Admin password for site install (default "admin" for local dev;
       # ALWAYS set a strong one for a public demo).
       ADMIN_PASS: ${ADMIN_PASS:-admin}
