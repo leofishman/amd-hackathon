@@ -1,6 +1,7 @@
 services:
   web:
     build: .
+    restart: unless-stopped
     ports:
       - "${WEB_PORT:-8080}:80"
     environment:
@@ -47,6 +48,7 @@ services:
 
   db:
     image: mariadb:11.4
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: drupal
